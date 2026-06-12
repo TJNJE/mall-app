@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useProductDetail } from '../hooks/useProductDetail'
+import { useCartStore } from '@/features/cart/stores/cartStore'
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -7,6 +8,23 @@ export default function ProductDetailPage() {
   const productId = Number(id)
 
   const { data: product, isLoading, error } = useProductDetail(productId)
+  const addItem = useCartStore((s) => s.addItem)
+
+  const handleAddToCart = () => {
+    if (!product) return
+    addItem({
+      productId: product.id,
+      productName: product.name,
+      productImage: product.image,
+      price: product.price,
+    })
+    navigate('/cart')
+  }
+
+  const handleBuyNow = () => {
+    if (!product) return
+    navigate(`/checkout?id=${productId}&quantity=1`)
+  }
 
   if (isLoading) {
     return (
@@ -30,18 +48,15 @@ export default function ProductDetailPage() {
 
   return (
     <div style={styles.container}>
-      {/* 返回按钮 */}
-      <button style={styles.backBtn} onClick={() => navigate('/')}>
+      <button style={styles.backBtn} type="button" onClick={() => navigate('/')}>
         ← 返回
       </button>
 
       <div style={styles.content}>
-        {/* 左侧图片 */}
         <div style={styles.left}>
           <img src={product.image} alt={product.name} style={styles.image} />
         </div>
 
-        {/* 右侧信息 */}
         <div style={styles.right}>
           <h1 style={styles.title}>{product.name}</h1>
 
@@ -96,9 +111,19 @@ export default function ProductDetailPage() {
                 opacity: product.stock <= 0 ? 0.5 : 1,
               }}
               disabled={product.stock <= 0}
-              onClick={() => navigate(`/checkout?id=${productId}&quantity=1`)}
+              onClick={handleBuyNow}
             >
-              {product.stock > 0 ? '立即购买' : '暂时缺货'}
+              立即购买
+            </button>
+            <button
+              style={{
+                ...styles.addToCartBtn,
+                opacity: product.stock <= 0 ? 0.5 : 1,
+              }}
+              disabled={product.stock <= 0}
+              onClick={handleAddToCart}
+            >
+              加入购物车
             </button>
           </div>
         </div>
@@ -108,10 +133,7 @@ export default function ProductDetailPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  container: {
-    maxWidth: 1200,
-    margin: '0 auto',
-  },
+  container: { maxWidth: 1200, margin: '0 auto' },
   backBtn: {
     border: '1px solid #d9d9d9',
     background: '#fff',
@@ -129,19 +151,14 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 8,
     border: '1px solid #f0f0f0',
   },
-  left: {
-    width: 480,
-    flexShrink: 0,
-  },
+  left: { width: 480, flexShrink: 0 },
   image: {
     width: '100%',
     height: 480,
     objectFit: 'cover',
     borderRadius: 8,
   },
-  right: {
-    flex: 1,
-  },
+  right: { flex: 1 },
   title: {
     fontSize: 22,
     fontWeight: 600,
@@ -149,11 +166,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 16,
     lineHeight: 1.4,
   },
-  tags: {
-    display: 'flex',
-    gap: 8,
-    marginBottom: 20,
-  },
+  tags: { display: 'flex', gap: 8, marginBottom: 20 },
   tag: {
     fontSize: 12,
     padding: '3px 8px',
@@ -170,16 +183,8 @@ const styles: Record<string, React.CSSProperties> = {
     paddingBottom: 20,
     borderBottom: '1px solid #f0f0f0',
   },
-  price: {
-    fontSize: 32,
-    fontWeight: 700,
-    color: '#e74c3c',
-  },
-  originalPrice: {
-    fontSize: 16,
-    color: '#999',
-    textDecoration: 'line-through',
-  },
+  price: { fontSize: 32, fontWeight: 700, color: '#e74c3c' },
+  originalPrice: { fontSize: 16, color: '#999', textDecoration: 'line-through' },
   discount: {
     fontSize: 13,
     color: '#fff',
@@ -187,42 +192,15 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '2px 8px',
     borderRadius: 3,
   },
-  infoRow: {
-    display: 'flex',
-    marginBottom: 14,
-    fontSize: 14,
-  },
-  infoLabel: {
-    width: 80,
-    color: '#999',
-    flexShrink: 0,
-  },
-  infoValue: {
-    color: '#333',
-  },
-  description: {
-    marginTop: 28,
-    paddingTop: 20,
-    borderTop: '1px solid #f0f0f0',
-  },
-  descTitle: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: 12,
-  },
-  descText: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 1.8,
-  },
-  action: {
-    marginTop: 32,
-    paddingTop: 20,
-    borderTop: '1px solid #f0f0f0',
-  },
+  infoRow: { display: 'flex', marginBottom: 14, fontSize: 14 },
+  infoLabel: { width: 80, color: '#999', flexShrink: 0 },
+  infoValue: { color: '#333' },
+  description: { marginTop: 28, paddingTop: 20, borderTop: '1px solid #f0f0f0' },
+  descTitle: { fontSize: 16, fontWeight: 600, color: '#333', marginBottom: 12 },
+  descText: { fontSize: 14, color: '#666', lineHeight: 1.8 },
+  action: { marginTop: 32, paddingTop: 20, borderTop: '1px solid #f0f0f0', display: 'flex', gap: 12 },
   buyBtn: {
-    width: '100%',
+    flex: 1,
     padding: '14px 0',
     fontSize: 16,
     fontWeight: 600,
@@ -232,11 +210,18 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 8,
     cursor: 'pointer',
   },
-  loading: {
-    textAlign: 'center',
-    padding: 60,
-    color: '#999',
+  addToCartBtn: {
+    flex: 1,
+    padding: '14px 0',
+    fontSize: 16,
+    fontWeight: 600,
+    background: '#fff',
+    color: '#1677ff',
+    border: '1px solid #1677ff',
+    borderRadius: 8,
+    cursor: 'pointer',
   },
+  loading: { textAlign: 'center', padding: 60, color: '#999' },
   spinner: {
     width: 36,
     height: 36,
@@ -246,9 +231,5 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '0 auto 16px',
     animation: 'spin 0.8s linear infinite',
   },
-  error: {
-    textAlign: 'center',
-    padding: 60,
-    color: '#999',
-  },
+  error: { textAlign: 'center', padding: 60, color: '#999' },
 }

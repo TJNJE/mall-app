@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/stores/authStore'
+import CartIcon from '@/features/cart/components/CartIcon'
 
 export default function Header() {
   const location = useLocation()
@@ -25,6 +26,7 @@ export default function Header() {
           >
             首页
           </Link>
+          <CartIcon />
           {isAuthenticated && (
             <Link
               to="/orders"

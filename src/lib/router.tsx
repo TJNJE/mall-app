@@ -6,6 +6,7 @@ import AuthGuard from './AuthGuard'
 import App from '../App'
 import ProductListPage from '@/features/product/features/pages/ProductListPage'
 import ProductDetailPage from '@/features/product/features/pages/ProductDetailPage'
+import CartPage from '@/features/cart/features/pages/CartPage'
 import LoginPage from '@/features/auth/components/LoginPage'
 import CheckoutPage from '@/features/order/features/pages/CheckoutPage'
 import OrderSuccessPage from '@/features/order/features/pages/OrderSuccessPage'
@@ -21,6 +22,7 @@ export function RouterProvider() {
         <Routes>
           <Route element={<App />}>
             <Route path="/" element={<ProductListPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route
