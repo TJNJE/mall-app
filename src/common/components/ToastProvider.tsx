@@ -1,11 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useCallback } from 'react'
+import type { ToastMessage } from './toastTypes'
 import Toast from './Toast'
-
-interface ToastMessage {
-  id: string
-  type: 'success' | 'error' | 'warning'
-  message: string
-}
 
 interface ToastContextValue {
   toast: {
