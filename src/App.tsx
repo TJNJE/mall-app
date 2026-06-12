@@ -1,14 +1,18 @@
 import { Outlet } from 'react-router-dom'
 import Header from '@/common/components/Header'
+import { ErrorBoundary } from '@/common/components/ErrorBoundary'
+import { ToastProvider } from '@/common/components/ToastProvider'
 
 function App() {
   return (
-    <div>
-      <Header />
-      <main className="main-content">
-        <Outlet />
-      </main>
-    </div>
+    <ErrorBoundary>
+      <ToastProvider>
+        <Header />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }
 
