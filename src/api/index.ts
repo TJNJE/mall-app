@@ -2,7 +2,6 @@ import request from '@/lib/request'
 import type {
   Product,
   ProductListResponse,
-  ApiResponse,
   Order,
   OrderListResponse,
   CheckoutRequest,

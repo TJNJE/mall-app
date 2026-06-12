@@ -1,5 +1,5 @@
 import products from './products'
-import type { Product, OrderItem, ShippingAddress } from '@/types'
+import type { OrderItem, ShippingAddress } from '@/types'
 
 const STORAGE_KEY = '__mall_orders__'
 
@@ -28,7 +28,7 @@ function saveOrders(list: MockOrder[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list))
 }
 
-let orders: MockOrder[] = getOrders()
+const orders: MockOrder[] = getOrders()
 
 let orderCounter = 1000
 

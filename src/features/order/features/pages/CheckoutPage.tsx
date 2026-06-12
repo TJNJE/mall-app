@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useProductDetail } from '@/features/product/features/hooks/useProductDetail'
 import { useCreateOrder } from '../hooks/useCreateOrder'
