@@ -34,8 +34,8 @@ export const worker = setupWorker(
     const body = await request.json()
     const { items, address } = body as { items: Array<{ productId: number; quantity: number }>; address: Record<string, string> }
     const productIds = items.map((item) => item.productId)
-    const amounts = items.reduce((sum, item) => sum + item.quantity, 0)
-    const result = mockCheckout(productIds, amounts, address)
+    const quantities = items.map((item) => item.quantity)
+    const result = mockCheckout(productIds, quantities, address)
     return json(result)
   }),
 

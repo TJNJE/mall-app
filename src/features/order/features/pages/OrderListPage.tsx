@@ -35,6 +35,7 @@ export default function OrderListPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['orders', page],
     queryFn: () => getOrderList({ page, pageSize: 10 }),
+    staleTime: 0,
   })
 
   const orders = data?.list ?? []

@@ -8,9 +8,6 @@ if (import.meta.env.DEV) {
   const { worker } = await import('./mock/browser')
   await worker.start({
     onUnhandledRequest: 'bypass',
-    serviceWorker: {
-      url: undefined,
-    },
   })
 }
 

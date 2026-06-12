@@ -18,6 +18,7 @@ export default function OrderDetailPage() {
     queryKey: ['order', id],
     queryFn: () => getOrderDetail(id || ''),
     enabled: !!id,
+    staleTime: 0,
   })
 
   if (isLoading) {

@@ -1,7 +1,34 @@
 import products from './products'
+import type { Product, OrderItem, ShippingAddress } from '@/types'
 
-/** 模拟订单存储 */
-let orders: Array<{ id: string; productIds: number[]; totalAmount: number; status: string; createdAt: string }> = []
+const STORAGE_KEY = '__mall_orders__'
+
+interface MockOrder {
+  id: string
+  items: OrderItem[]
+  totalAmount: number
+  status: string
+  address: ShippingAddress
+  phone: string
+  createdAt: string
+  updatedAt: string
+}
+
+function getOrders(): MockOrder[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch {
+    // ignore
+  }
+  return []
+}
+
+function saveOrders(list: MockOrder[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list))
+}
+
+let orders: MockOrder[] = getOrders()
 
 let orderCounter = 1000
 
@@ -28,31 +55,53 @@ export function mockGetProduct(id: number) {
 /** 下单 */
 export function mockCheckout(
   productIds: number[],
-  amounts: number,
+  quantities: number[],
   address: Record<string, string>,
 ): { orderId: string; totalAmount: number } {
   orderCounter++
   const orderId = `ORD${orderCounter}`
 
-  const items = productIds
-    .map((id) => products.find((p) => p.id === id))
-    .filter(Boolean) as typeof products
+  const items: OrderItem[] = productIds
+    .map((id, idx) => {
+      const product = products.find((p) => p.id === id)
+      if (!product) return null
+      return {
+        productId: product.id,
+        productName: product.name,
+        productImage: product.image,
+        price: product.price,
+        quantity: quantities[idx] || 1,
+      }
+    })
+    .filter(Boolean) as OrderItem[]
 
-  const totalAmount = items.reduce((sum, item) => sum + item.price * amounts, 0)
+  const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const now = new Date().toISOString()
 
-  const order = {
+  const order: MockOrder = {
     id: orderId,
-    productIds,
+    items,
     totalAmount,
     status: 'pending',
-    createdAt: new Date().toISOString(),
+    address: {
+      name: address.name || '',
+      phone: address.phone || '',
+      province: address.province || '',
+      city: address.city || '',
+      district: address.district || '',
+      detail: address.detail || '',
+    },
+    phone: address.phone || '',
+    createdAt: now,
+    updatedAt: now,
   }
   orders.push(order)
+  saveOrders(orders)
   return { orderId, totalAmount }
 }
 
 /** 获取订单列表 */
-export function mockGetOrders(page: number = 1, pageSize: number = 10): { list: typeof orders; total: number } {
+export function mockGetOrders(page: number = 1, pageSize: number = 10): { list: MockOrder[]; total: number } {
   const start = (page - 1) * pageSize
   const list = orders.slice(start, start + pageSize)
   return { list, total: orders.length }
@@ -60,5 +109,5 @@ export function mockGetOrders(page: number = 1, pageSize: number = 10): { list: 
 
 /** 获取订单详情 */
 export function mockGetOrder(id: string) {
-  return orders.find((o) => o.id === id)
+  return orders.find((o: MockOrder) => o.id === id)
 }
