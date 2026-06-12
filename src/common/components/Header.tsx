@@ -1,12 +1,13 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useAuthStore } from '@/features/auth/stores/authStore'
 
 export default function Header() {
   const location = useLocation()
+  const { isAuthenticated, user, logout } = useAuthStore()
 
-  const navItems = [
-    { path: '/', label: '首页' },
-    { path: '/orders', label: '我的订单' },
-  ]
+  const handleClickLogout = () => {
+    logout()
+  }
 
   return (
     <header style={styles.header}>
@@ -15,19 +16,41 @@ export default function Header() {
           商城
         </Link>
         <nav style={styles.nav}>
-          {navItems.map((item) => (
+          <Link
+            to="/"
+            style={{
+              ...styles.link,
+              color: location.pathname === '/' ? '#1677ff' : '#333',
+            }}
+          >
+            首页
+          </Link>
+          {isAuthenticated && (
             <Link
-              key={item.path}
-              to={item.path}
+              to="/orders"
               style={{
                 ...styles.link,
-                color: location.pathname === item.path ? '#1677ff' : '#333',
+                color: location.pathname.startsWith('/order') ? '#1677ff' : '#333',
               }}
             >
-              {item.label}
+              我的订单
             </Link>
-          ))}
+          )}
         </nav>
+        <div style={styles.right}>
+          {isAuthenticated ? (
+            <span style={styles.user}>
+              {user?.username}{' '}
+              <button style={styles.logoutBtn} type="button" onClick={handleClickLogout}>
+                退出
+              </button>
+            </span>
+          ) : (
+            <Link to="/login" style={styles.loginBtn}>
+              登录
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   )
@@ -65,5 +88,29 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#333',
     fontSize: 14,
     padding: '8px 0',
+  },
+  right: {
+    marginLeft: 'auto',
+  },
+  user: {
+    fontSize: 14,
+    color: '#333',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logoutBtn: {
+    border: 'none',
+    background: 'none',
+    color: '#ff4d4f',
+    cursor: 'pointer',
+    fontSize: 13,
+    padding: '4px 8px',
+  },
+  loginBtn: {
+    textDecoration: 'none',
+    color: '#1677ff',
+    fontSize: 14,
+    fontWeight: 500,
   },
 }

@@ -9,6 +9,15 @@ async function json<T>(data: T, status = 200): Promise<Response> {
 }
 
 export const worker = setupWorker(
+  // 登录（POST /api/auth/login）
+  http.post('/api/auth/login', async ({ request }) => {
+    const body = await request.json()
+    const { username } = body as { username: string }
+    // 简单登录，任何用户名都成功
+    void username // eslint-disable-line @typescript-eslint/no-unused-vars
+    return json({ token: `token_${Date.now()}` })
+  }),
+
   // 商品列表（GET /api/products?page=1&pageSize=10&keyword=xxx）
   http.get('/api/products', async ({ request }) => {
     const url = new URL(request.url)

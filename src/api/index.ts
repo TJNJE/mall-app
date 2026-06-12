@@ -8,6 +8,12 @@ import type {
   CheckoutResponse,
 } from '@/types'
 
+// ========== 认证 ==========
+
+export function login(username: string) {
+  return request.post('/api/auth/login', { username }) as Promise<{ token: string }>
+}
+
 // ========== 商品相关 ==========
 
 export function getProductList(params: { page?: number; pageSize?: number; keyword?: string }) {
