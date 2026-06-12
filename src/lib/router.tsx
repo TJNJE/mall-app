@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './query'
 import App from '../App'
 import ProductListPage from '@/features/product/features/pages/ProductListPage'
+import ProductDetailPage from '@/features/product/features/pages/ProductDetailPage'
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -21,7 +22,7 @@ export function RouterProvider() {
         <Routes>
           <Route element={<App />}>
             <Route path="/" element={<ProductListPage />} />
-            <Route path="/product/:id" element={<Placeholder title="商品详情" />} />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/checkout" element={<Placeholder title="下单" />} />
             <Route path="/order/success" element={<Placeholder title="下单成功" />} />
             <Route path="/orders" element={<Placeholder title="我的订单" />} />
