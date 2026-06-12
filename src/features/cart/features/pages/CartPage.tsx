@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { useCartStore } from '../stores/cartStore'
+import { useCartStore } from '../../stores/cartStore'
 
 export default function CartPage() {
   const navigate = useNavigate()
-  const { items, updateQuantity, removeItem, getTotal } = useCartStore()
-  const { count, amount } = getTotal()
+  const { items, updateQuantity, removeItem } = useCartStore()
+  const count = useCartStore((s) => s.getCount())
+  const amount = useCartStore((s) => s.getAmount())
 
   if (items.length === 0) {
     return (
@@ -12,7 +13,7 @@ export default function CartPage() {
         <h1 style={styles.heading}>购物车</h1>
         <div style={styles.empty}>
           <p>购物车是空的</p>
-          <button style={styles.btn} onClick={() => navigate('/')}>
+          <button style={styles.btn} type="button" onClick={() => navigate('/')}>
             去逛逛
           </button>
         </div>
@@ -33,12 +34,12 @@ export default function CartPage() {
               <span style={styles.price}>¥{item.price}</span>
             </div>
             <div style={styles.qty}>
-              <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}>-</button>
+              <button type="button" onClick={() => updateQuantity(item.productId, item.quantity - 1)}>-</button>
               <span>{item.quantity}</span>
-              <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}>+</button>
+              <button type="button" onClick={() => updateQuantity(item.productId, item.quantity + 1)}>+</button>
             </div>
             <span style={styles.subtotal}>¥{(item.price * item.quantity).toFixed(2)}</span>
-            <button style={styles.delete} onClick={() => removeItem(item.productId)}>
+            <button type="button" style={styles.delete} onClick={() => removeItem(item.productId)}>
               删除
             </button>
           </div>
@@ -48,7 +49,7 @@ export default function CartPage() {
       <div style={styles.summary}>
         <span>共 {count} 件</span>
         <span style={styles.total}>合计：¥{amount.toFixed(2)}</span>
-        <button style={styles.checkoutBtn} onClick={() => navigate('/checkout')}>
+        <button style={styles.checkoutBtn} type="button" onClick={() => navigate('/checkout')}>
           去结算
         </button>
       </div>

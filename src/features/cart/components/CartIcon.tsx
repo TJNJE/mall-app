@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useCartStore } from '../stores/cartStore'
 
 export default function CartIcon() {
-  const { count } = useCartStore((s) => s.getTotal())
+  const count = useCartStore((s) => s.getCount())
 
   if (count === 0) return null
 
