@@ -6,7 +6,12 @@ import { RouterProvider } from './lib/router'
 // 开发环境开启 Mock
 if (import.meta.env.DEV) {
   const { worker } = await import('./mock/browser')
-  await worker.start()
+  await worker.start({
+    onUnhandledRequest: 'bypass',
+    serviceWorker: {
+      url: undefined,
+    },
+  })
 }
 
 createRoot(document.getElementById('root')!).render(

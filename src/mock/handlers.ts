@@ -1,4 +1,4 @@
-import { products } from './products'
+import products from './products'
 
 /** 模拟订单存储 */
 let orders: Array<{ id: string; productIds: number[]; totalAmount: number; status: string; createdAt: string }> = []
