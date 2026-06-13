@@ -35,7 +35,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div style={styles.container}>
         {toasts.map((t) => (
-          <Toast key={t.id} {...t} />
+          <Toast key={t.id} type={t.type} message={t.message} />
         ))}
       </div>
     </ToastContext.Provider>

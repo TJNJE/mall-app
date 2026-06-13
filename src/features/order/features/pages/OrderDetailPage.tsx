@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getOrderDetail } from '@/api'
+import type { Order } from '@/types'
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   pending: { label: '待付款', color: '#faad14' },
@@ -16,7 +17,7 @@ export default function OrderDetailPage() {
 
   const { data: order, isLoading } = useQuery({
     queryKey: ['order', id],
-    queryFn: () => getOrderDetail(id || ''),
+    queryFn: () => getOrderDetail(id || '') as unknown as Promise<Order>,
     enabled: !!id,
     staleTime: 0,
   })
@@ -100,7 +101,7 @@ export default function OrderDetailPage() {
             <div style={styles.itemInfo}>
               <h3 style={styles.itemName}>{item.productName}</h3>
               <span style={styles.itemPrice}>¥{item.price}</span>
-              <span style={styles.itemQty} x="x{item.quantity}">{`x${item.quantity}`}</span>
+              <span style={{ ...styles.itemPrice, fontSize: 13, color: '#999' }}>{`x${item.quantity}`}</span>
             </div>
           </div>
         ))}

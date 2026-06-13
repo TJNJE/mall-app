@@ -17,6 +17,6 @@ const PRODUCT_LIST_KEY = ['products']
 export function useProductList(params: ProductListParams = {}) {
   return useQuery<ProductListResponse>({
     queryKey: [...PRODUCT_LIST_KEY, params],
-    queryFn: () => getProductList(params),
+    queryFn: () => getProductList(params) as unknown as Promise<ProductListResponse>,
   })
 }

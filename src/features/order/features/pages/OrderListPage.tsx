@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getOrderList } from '@/api'
+import type { OrderListResponse } from '@/types'
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   pending: { label: '待付款', color: '#faad14' },
@@ -11,7 +12,7 @@ const STATUS_MAP: Record<string, { label: string; color: string }> = {
   cancelled: { label: '已取消', color: '#999' },
 }
 
-function OrderCard({ order }: { order: { id: string; totalAmount: number; status: string; createdAt: string; productIds: number[] } }) {
+function OrderCard({ order }: { order: { id: string; totalAmount: number; status: string; createdAt: string } }) {
   const navigate = useNavigate()
   const statusInfo = STATUS_MAP[order.status] || { label: order.status, color: '#999' }
 
@@ -32,9 +33,9 @@ function OrderCard({ order }: { order: { id: string; totalAmount: number; status
 export default function OrderListPage() {
   const [page, setPage] = useState(1)
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<OrderListResponse>({
     queryKey: ['orders', page],
-    queryFn: () => getOrderList({ page, pageSize: 10 }),
+    queryFn: () => getOrderList({ page, pageSize: 10 }) as unknown as Promise<OrderListResponse>,
     staleTime: 0,
   })
 
@@ -59,7 +60,7 @@ export default function OrderListPage() {
       ) : (
         <>
           <div style={styles.list}>
-            {orders.map((order) => (
+            {orders.map((order: { id: string; totalAmount: number; status: string; createdAt: string }) => (
               <OrderCard key={order.id} order={order} />
             ))}
           </div>

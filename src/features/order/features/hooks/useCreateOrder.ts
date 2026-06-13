@@ -7,7 +7,7 @@ import type { CheckoutRequest, CheckoutResponse } from '@/types'
 // 成功后可以用 queryClient.invalidateQueries 让订单列表失效
 export function useCreateOrder() {
   return useMutation<CheckoutResponse, Error, CheckoutRequest>({
-    mutationFn: (data: CheckoutRequest) => createOrder(data),
+    mutationFn: (data: CheckoutRequest) => createOrder(data) as unknown as Promise<CheckoutResponse>,
     // 下单成功后不自动刷新任何查询，由页面组件手动 invalidation
   })
 }

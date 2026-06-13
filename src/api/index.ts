@@ -1,39 +1,34 @@
 import request from '@/lib/request'
 import type {
-  Product,
-  ProductListResponse,
-  Order,
-  OrderListResponse,
   CheckoutRequest,
-  CheckoutResponse,
 } from '@/types'
 
 // ========== 认证 ==========
 
 export function login(username: string) {
-  return request.post('/api/auth/login', { username }) as Promise<{ token: string }>
+  return request.post('/api/auth/login', { username })
 }
 
 // ========== 商品相关 ==========
 
 export function getProductList(params: { page?: number; pageSize?: number; keyword?: string }) {
-  return request.get<ProductListResponse>('/api/products', { params }) as Promise<ProductListResponse>
+  return request.get('/api/products', { params })
 }
 
 export function getProductDetail(id: number) {
-  return request.get<Product>('/api/products/' + id) as Promise<Product>
+  return request.get(`/api/products/${id}`)
 }
 
 // ========== 订单相关 ==========
 
 export function createOrder(data: CheckoutRequest) {
-  return request.post<CheckoutResponse>('/api/orders', data) as Promise<CheckoutResponse>
+  return request.post('/api/orders', data)
 }
 
 export function getOrderList(params: { page?: number; pageSize?: number }) {
-  return request.get<OrderListResponse>('/api/orders', { params }) as Promise<OrderListResponse>
+  return request.get('/api/orders', { params })
 }
 
 export function getOrderDetail(id: string) {
-  return request.get<Order>('/api/orders/' + id) as Promise<Order>
+  return request.get(`/api/orders/${id}`)
 }

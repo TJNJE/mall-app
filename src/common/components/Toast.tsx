@@ -1,4 +1,4 @@
-import type { ToastMessage } from './ToastProvider'
+import type { ToastMessage } from './toastTypes'
 
 const COLORS: Record<string, string> = {
   success: '#52c41a',
@@ -12,7 +12,7 @@ const ICONS: Record<string, string> = {
   warning: '!',
 }
 
-export default function Toast({ type, message }: ToastMessage & { id: never }) {
+export default function Toast({ type, message }: { type: ToastMessage['type']; message: string }) {
   return (
     <div style={{ ...styles.toast, borderLeftColor: COLORS[type] }}>
       <span style={{ color: COLORS[type], fontWeight: 700 }}>{ICONS[type]}</span>
