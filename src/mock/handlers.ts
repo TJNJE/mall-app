@@ -30,7 +30,14 @@ function saveOrders(list: MockOrder[]) {
 
 const orders: MockOrder[] = getOrders()
 
+// 根据已有订单中最大的 ID 恢复计数器，避免 ID 冲突
 let orderCounter = 1000
+for (const order of orders) {
+  const num = parseInt(order.id.replace('ORD', ''), 10)
+  if (!isNaN(num) && num > orderCounter) {
+    orderCounter = num
+  }
+}
 
 /** 获取商品列表（支持分页和搜索） */
 export function mockGetProducts(
