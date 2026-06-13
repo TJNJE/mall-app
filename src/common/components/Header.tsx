@@ -11,18 +11,15 @@ export default function Header() {
   }
 
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
-        <Link to="/" style={styles.logo}>
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div className="max-w-[1200px] mx-auto px-5 flex items-center h-[60px]">
+        <Link to="/" className="text-lg font-bold text-primary no-underline mr-10">
           商城
         </Link>
-        <nav style={styles.nav}>
+        <nav className="flex gap-6">
           <Link
             to="/"
-            style={{
-              ...styles.link,
-              color: location.pathname === '/' ? '#1677ff' : '#333',
-            }}
+            className={`no-underline text-sm py-2 ${location.pathname === '/' ? 'text-primary' : 'text-gray-700'}`}
           >
             首页
           </Link>
@@ -30,25 +27,22 @@ export default function Header() {
           {isAuthenticated && (
             <Link
               to="/orders"
-              style={{
-                ...styles.link,
-                color: location.pathname.startsWith('/order') ? '#1677ff' : '#333',
-              }}
+              className={`no-underline text-sm py-2 ${location.pathname.startsWith('/order') ? 'text-primary' : 'text-gray-700'}`}
             >
               我的订单
             </Link>
           )}
         </nav>
-        <div style={styles.right}>
+        <div className="ml-auto">
           {isAuthenticated ? (
-            <span style={styles.user}>
+            <span className="text-sm text-gray-700 flex items-center gap-2">
               {user?.username}{' '}
-              <button style={styles.logoutBtn} type="button" onClick={handleClickLogout}>
+              <button type="button" onClick={handleClickLogout} className="border-0 bg-transparent text-red-500 cursor-pointer text-xs px-2 py-1">
                 退出
               </button>
             </span>
           ) : (
-            <Link to="/login" style={styles.loginBtn}>
+            <Link to="/login" className="no-underline text-primary text-sm font-medium">
               登录
             </Link>
           )}
@@ -56,63 +50,4 @@ export default function Header() {
       </div>
     </header>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  header: {
-    background: '#fff',
-    borderBottom: '1px solid #eee',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-  },
-  container: {
-    maxWidth: 1200,
-    margin: '0 auto',
-    padding: '0 20px',
-    display: 'flex',
-    alignItems: 'center',
-    height: 60,
-  },
-  logo: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: '#1677ff',
-    textDecoration: 'none',
-    marginRight: 40,
-  },
-  nav: {
-    display: 'flex',
-    gap: 24,
-  },
-  link: {
-    textDecoration: 'none',
-    color: '#333',
-    fontSize: 14,
-    padding: '8px 0',
-  },
-  right: {
-    marginLeft: 'auto',
-  },
-  user: {
-    fontSize: 14,
-    color: '#333',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  },
-  logoutBtn: {
-    border: 'none',
-    background: 'none',
-    color: '#ff4d4f',
-    cursor: 'pointer',
-    fontSize: 13,
-    padding: '4px 8px',
-  },
-  loginBtn: {
-    textDecoration: 'none',
-    color: '#1677ff',
-    fontSize: 14,
-    fontWeight: 500,
-  },
 }

@@ -33,7 +33,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div style={styles.container}>
+      <div className="fixed top-20 right-5 z-[9999] flex flex-col gap-2">
         {toasts.map((t) => (
           <Toast key={t.id} type={t.type} message={t.message} />
         ))}
@@ -46,16 +46,4 @@ export function useToast() {
   const ctx = useContext(ToastContext)
   if (!ctx) throw new Error('useToast must be used within ToastProvider')
   return ctx.toast
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    position: 'fixed',
-    top: 80,
-    right: 20,
-    zIndex: 9999,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-  },
 }

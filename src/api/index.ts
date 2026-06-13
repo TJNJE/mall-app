@@ -1,34 +1,39 @@
 import request from '@/lib/request'
 import type {
   CheckoutRequest,
+  CheckoutResponse,
+  Order,
+  OrderListResponse,
+  Product,
+  ProductListResponse,
 } from '@/types'
 
 // ========== 认证 ==========
 
 export function login(username: string) {
-  return request.post('/api/auth/login', { username })
+  return request.post<{ token: string }>('/api/auth/login', { username })
 }
 
 // ========== 商品相关 ==========
 
 export function getProductList(params: { page?: number; pageSize?: number; keyword?: string }) {
-  return request.get('/api/products', { params })
+  return request.get<ProductListResponse>('/api/products', { params }) as unknown as Promise<ProductListResponse>
 }
 
 export function getProductDetail(id: number) {
-  return request.get(`/api/products/${id}`)
+  return request.get<Product>('/api/products/' + id) as unknown as Promise<Product>
 }
 
 // ========== 订单相关 ==========
 
 export function createOrder(data: CheckoutRequest) {
-  return request.post('/api/orders', data)
+  return request.post<CheckoutResponse>('/api/orders', data) as unknown as Promise<CheckoutResponse>
 }
 
 export function getOrderList(params: { page?: number; pageSize?: number }) {
-  return request.get('/api/orders', { params })
+  return request.get<OrderListResponse>('/api/orders', { params }) as unknown as Promise<OrderListResponse>
 }
 
 export function getOrderDetail(id: string) {
-  return request.get(`/api/orders/${id}`)
+  return request.get<Order>('/api/orders/' + id) as unknown as Promise<Order>
 }

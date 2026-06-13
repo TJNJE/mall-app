@@ -9,16 +9,16 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
 
   return (
     <div
-      style={styles.card}
+      className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-transform duration-200 hover:shadow-md"
       onClick={() => navigate(`/product/${product.id}`)}
     >
-      <img src={product.image} alt={product.name} loading="lazy" style={styles.image} />
-      <div style={styles.cardBody}>
-        <h3 style={styles.title}>{product.name}</h3>
-        <div style={styles.priceRow}>
-          <span style={styles.price}>¥{product.price}</span>
+      <img src={product.image} alt={product.name} loading="lazy" className="w-full h-60 object-cover" />
+      <div className="p-3">
+        <h3 className="text-sm font-medium text-gray-700 truncate">{product.name}</h3>
+        <div className="flex items-baseline justify-between">
+          <span className="text-lg font-bold text-red-600">¥{product.price}</span>
           {product.tags && product.tags.length > 0 && (
-            <span style={styles.tag}>{product.tags[0]}</span>
+            <span className="text-xs px-1.5 py-0.5 bg-red-50 text-red-500 rounded border border-red-200">{product.tags[0]}</span>
           )}
         </div>
       </div>
@@ -29,11 +29,11 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
 // 骨架屏卡片
 function SkeletonCard() {
   return (
-    <div style={styles.card}>
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <Skeleton width="100%" height={240} borderRadius={0} style={{ borderBottom: '1px solid #f0f0f0' }} />
-      <div style={styles.cardBody}>
+      <div className="p-3">
         <Skeleton width="80%" height={14} style={{ marginBottom: 8 }} />
-        <div style={styles.priceRow}>
+        <div className="flex items-baseline justify-between">
           <Skeleton width="30%" height={18} />
           <Skeleton width="50px" height={18} />
         </div>
@@ -59,19 +59,21 @@ function Pagination({
   if (totalPages <= 1) return null
 
   return (
-    <div style={styles.pagination}>
+    <div className="flex items-center justify-center gap-4 mt-8">
       <button
-        style={{ ...styles.pageBtn, opacity: page === 1 ? 0.4 : 1 }}
+        className="px-4 py-2 text-sm border border-gray-300 rounded-lg bg-white cursor-pointer"
+        style={{ opacity: page === 1 ? 0.4 : 1 }}
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
       >
         上一页
       </button>
-      <span style={styles.pageInfo}>
+      <span className="text-sm text-gray-600">
         第 {page} / {totalPages} 页，共 {total} 条
       </span>
       <button
-        style={{ ...styles.pageBtn, opacity: page === totalPages ? 0.4 : 1 }}
+        className="px-4 py-2 text-sm border border-gray-300 rounded-lg bg-white cursor-pointer"
+        style={{ opacity: page === totalPages ? 0.4 : 1 }}
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
       >
@@ -104,8 +106,8 @@ export default function ProductListPage() {
   if (isLoading) {
     return (
       <div>
-        <h1 style={styles.heading}>商品列表</h1>
-        <div style={styles.grid}>
+        <h1 className="text-2xl mb-5 text-gray-800">商品列表</h1>
+        <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -116,28 +118,28 @@ export default function ProductListPage() {
 
   return (
     <div>
-      <h1 style={styles.heading}>商品列表</h1>
+      <h1 className="text-2xl mb-5 text-gray-800">商品列表</h1>
 
       {/* 搜索栏 */}
-      <div style={styles.searchBar}>
+      <div className="flex gap-2.5 mb-6">
         <input
           type="text"
           placeholder="搜索商品名称..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          style={styles.searchInput}
+          className="flex-1 px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none"
         />
-        <button style={styles.searchBtn} onClick={handleSearch}>
+        <button className="px-6 py-2.5 text-sm bg-primary text-white border-0 rounded-lg cursor-pointer" onClick={handleSearch}>
           搜索
         </button>
       </div>
 
       {/* 商品网格 */}
       {products.length === 0 ? (
-        <div style={styles.empty}>没有找到相关商品</div>
+        <div className="text-center py-16 text-gray-400 text-base">没有找到相关商品</div>
       ) : (
-        <div style={styles.grid}>
+        <div className="grid grid-cols-4 gap-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -153,107 +155,4 @@ export default function ProductListPage() {
       />
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  heading: {
-    fontSize: 24,
-    marginBottom: 20,
-    color: '#333',
-  },
-  searchBar: {
-    display: 'flex',
-    gap: 10,
-    marginBottom: 24,
-  },
-  searchInput: {
-    flex: 1,
-    padding: '10px 14px',
-    fontSize: 14,
-    border: '1px solid #d9d9d9',
-    borderRadius: 6,
-    outline: 'none',
-  },
-  searchBtn: {
-    padding: '10px 24px',
-    fontSize: 14,
-    background: '#1677ff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 6,
-    cursor: 'pointer',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: 16,
-  },
-  card: {
-    background: '#fff',
-    borderRadius: 8,
-    overflow: 'hidden',
-    border: '1px solid #f0f0f0',
-    cursor: 'pointer',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-  },
-  image: {
-    width: '100%',
-    height: 240,
-    objectFit: 'cover',
-  },
-  cardBody: {
-    padding: 12,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 500,
-    marginBottom: 8,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    color: '#333',
-  },
-  priceRow: {
-    display: 'flex',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#e74c3c',
-  },
-  tag: {
-    fontSize: 11,
-    padding: '2px 6px',
-    background: '#fff1f0',
-    color: '#ff4d4f',
-    borderRadius: 3,
-    border: '1px solid #ffccc7',
-  },
-  pagination: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    marginTop: 32,
-  },
-  pageBtn: {
-    padding: '8px 16px',
-    fontSize: 14,
-    border: '1px solid #d9d9d9',
-    borderRadius: 6,
-    background: '#fff',
-    cursor: 'pointer',
-  },
-  pageInfo: {
-    fontSize: 14,
-    color: '#666',
-  },
-  empty: {
-    textAlign: 'center',
-    padding: 60,
-    color: '#999',
-    fontSize: 16,
-  },
 }

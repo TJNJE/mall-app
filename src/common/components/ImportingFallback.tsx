@@ -1,32 +1,8 @@
 export default function ImportingFallback({ name }: { name: string }) {
   return (
-    <div style={styles.container}>
-      <div style={styles.spinner} />
-      <p style={styles.text}>加载中：{name}...</p>
+    <div className="flex flex-col items-center justify-center py-32 px-5 text-gray-400">
+      <div className="w-8 h-8 border-3 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+      <p className="text-sm text-gray-400">加载中：{name}...</p>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '120px 20px',
-    color: '#999',
-  },
-  spinner: {
-    width: 36,
-    height: 36,
-    border: '3px solid #f3f3f3',
-    borderTopColor: '#1677ff',
-    borderRadius: '50%',
-    margin: '0 auto 16px',
-    animation: 'spin 0.8s linear infinite',
-  },
-  text: {
-    fontSize: 14,
-    color: '#999',
-  },
 }

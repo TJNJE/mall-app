@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useProductDetail } from '@/features/product/features/hooks/useProductDetail'
 import { useCreateOrder } from '../hooks/useCreateOrder'
 import { checkoutSchema, type CheckoutForm } from '@/common/lib/formSchemas'
+import { Input } from '@/common/components/ui/Input'
+import { Textarea } from '@/common/components/ui/Textarea'
 
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams()
@@ -62,8 +64,8 @@ export default function CheckoutPage() {
 
   if (!product) {
     return (
-      <div style={styles.loading}>
-        <div style={styles.spinner} />
+      <div className="text-center py-16 text-gray-400">
+        <div className="w-8 h-8 border-3 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-4" />
         <p>加载中...</p>
       </div>
     )
@@ -75,70 +77,67 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>确认订单</h1>
+    <div className="max-w-[800px] mx-auto">
+      <h1 className="text-xl font-semibold text-gray-800 mb-6">确认订单</h1>
 
       {/* 收货信息 */}
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>收货信息</h2>
-        <div style={styles.formGrid}>
-          <InputField
+      <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">收货信息</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <Input
             label="姓名"
             error={errors.name?.message}
             placeholder="请输入收货人姓名"
             {...register('name')}
           />
-          <InputField
+          <Input
             label="手机号"
             error={errors.phone?.message}
             placeholder="请输入收货人手机号"
             {...register('phone')}
           />
-          <InputField
+          <Input
             label="省份"
             error={errors.province?.message}
             placeholder="请输入省份"
             {...register('province')}
           />
-          <InputField
+          <Input
             label="城市"
             error={errors.city?.message}
             placeholder="请输入城市"
             {...register('city')}
           />
-          <InputField
+          <Input
             label="区县"
             error={errors.district?.message}
             placeholder="请输入区县"
             {...register('district')}
           />
-          <div style={styles.fullWidthInput}>
-            <label style={styles.label}>详细地址</label>
-            <textarea
-              style={{ ...styles.textarea, borderColor: errors.detail ? '#ff4d4f' : undefined }}
-              placeholder="请输入街道、门牌号等详细地址"
-              {...register('detail')}
-            />
-            {errors.detail && <span style={styles.error}>{errors.detail.message}</span>}
-          </div>
+          <Textarea
+            label="详细地址"
+            error={errors.detail?.message}
+            placeholder="请输入街道、门牌号等详细地址"
+            {...register('detail')}
+          />
         </div>
       </div>
 
       {/* 商品列表 */}
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>商品信息</h2>
-        <div style={styles.cartItem}>
-          <img src={product.image} alt={product.name} loading="lazy" style={styles.cartImage} />
-          <div style={styles.cartInfo}>
-            <h3 style={styles.cartName}>{product.name}</h3>
-            <span style={styles.cartPrice}>¥{product.price}</span>
+      <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">商品信息</h2>
+        <div className="flex items-center gap-4">
+          <img src={product.image} alt={product.name} loading="lazy" className="w-24 h-24 object-cover rounded-lg" />
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-gray-800 mb-2">{product.name}</h3>
+            <span className="text-base font-semibold text-red-600">¥{product.price}</span>
           </div>
-          <div style={styles.quantityControl}>
-            <button type="button" style={styles.qtyBtn} onClick={() => handleQuantityChange(-1)}>
+          <div className="flex items-center gap-3">
+            <button type="button" className="w-8 h-8 text-lg border border-gray-300 rounded-lg bg-gray-50 cursor-pointer flex items-center justify-center" onClick={() => handleQuantityChange(-1)}>
               -
             </button>
-            <span style={styles.qtyValue}>{quantity}</span>
-            <button type="button" style={styles.qtyBtn} onClick={() => handleQuantityChange(1)}>
+            <span className="text-base min-w-8 text-center">{quantity}</span>
+            <button type="button" className="w-8 h-8 text-lg border border-gray-300 rounded-lg bg-gray-50 cursor-pointer flex items-center justify-center" onClick={() => handleQuantityChange(1)}>
               +
             </button>
           </div>
@@ -146,25 +145,24 @@ export default function CheckoutPage() {
       </div>
 
       {/* 金额汇总 */}
-      <div style={styles.summary}>
-        <div style={styles.summaryRow}>
+      <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
+        <div className="flex justify-between mb-3 text-sm text-gray-600">
           <span>商品数量</span>
           <span>{quantity} 件</span>
         </div>
-        <div style={{ ...styles.summaryRow, ...styles.totalRow }}>
-          <span style={styles.totalLabel}>合计</span>
-          <span style={styles.totalPrice}>¥{totalPrice.toFixed(2)}</span>
+        <div className="border-t border-gray-100 pt-3 mt-1">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-800 font-semibold">合计</span>
+            <span className="text-2xl font-bold text-red-600">¥{totalPrice.toFixed(2)}</span>
+          </div>
         </div>
       </div>
 
       {/* 提交按钮 */}
-      <div style={styles.submitArea}>
+      <div className="mb-6">
         <button
           type="submit"
-          style={{
-            ...styles.submitBtn,
-            opacity: isPending ? 0.6 : 1,
-          }}
+          className="w-full py-3.5 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer"
           disabled={isPending}
           onClick={handleSubmit(onSubmit)}
         >
@@ -173,202 +171,4 @@ export default function CheckoutPage() {
       </div>
     </div>
   )
-}
-
-// 表单项组件：react-hook-form 通过 spread 注入 register 和 ref
-function InputField({
-  label,
-  error,
-  placeholder,
-  ...rest
-}: {
-  label: string
-  error?: string
-  placeholder: string
-} & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <div style={styles.formItem}>
-      <label style={styles.label}>{label}</label>
-      <input
-        style={{ ...styles.input, borderColor: error ? '#ff4d4f' : undefined }}
-        placeholder={placeholder}
-        {...rest}
-      />
-      {error && <span style={styles.error}>{error}</span>}
-    </div>
-  )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    maxWidth: 800,
-    margin: '0 auto',
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: 24,
-  },
-  section: {
-    background: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    border: '1px solid #f0f0f0',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: 16,
-    paddingBottom: 12,
-    borderBottom: '1px solid #f0f0f0',
-  },
-  formGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: 16,
-  },
-  formItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-  },
-  fullWidthInput: {
-    gridColumn: '1 / -1',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-  },
-  label: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: 500,
-  },
-  input: {
-    padding: '10px 12px',
-    fontSize: 14,
-    border: '1px solid #d9d9d9',
-    borderRadius: 6,
-    outline: 'none',
-  },
-  textarea: {
-    padding: '10px 12px',
-    fontSize: 14,
-    border: '1px solid #d9d9d9',
-    borderRadius: 6,
-    outline: 'none',
-    resize: 'vertical',
-    minHeight: 80,
-    fontFamily: 'inherit',
-  },
-  error: {
-    fontSize: 12,
-    color: '#ff4d4f',
-  },
-  cartItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 16,
-  },
-  cartImage: {
-    width: 100,
-    height: 100,
-    objectFit: 'cover',
-    borderRadius: 6,
-  },
-  cartInfo: {
-    flex: 1,
-  },
-  cartName: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#333',
-    marginBottom: 8,
-  },
-  cartPrice: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#e74c3c',
-  },
-  quantityControl: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-  qtyBtn: {
-    width: 32,
-    height: 32,
-    fontSize: 18,
-    border: '1px solid #d9d9d9',
-    borderRadius: 6,
-    background: '#fafafa',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  qtyValue: {
-    fontSize: 16,
-    minWidth: 32,
-    textAlign: 'center',
-  },
-  summary: {
-    background: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    border: '1px solid #f0f0f0',
-    marginBottom: 16,
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-    fontSize: 14,
-    color: '#666',
-  },
-  totalRow: {
-    borderTop: '1px solid #f0f0f0',
-    paddingTop: 12,
-    marginTop: 4,
-  },
-  totalLabel: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: 600,
-  },
-  totalPrice: {
-    fontSize: 22,
-    fontWeight: 700,
-    color: '#e74c3c',
-  },
-  submitArea: {
-    marginBottom: 24,
-  },
-  submitBtn: {
-    width: '100%',
-    padding: '14px 0',
-    fontSize: 16,
-    fontWeight: 600,
-    background: '#1677ff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: 60,
-    color: '#999',
-  },
-  spinner: {
-    width: 36,
-    height: 36,
-    border: '3px solid #f3f3f3',
-    borderTopColor: '#1677ff',
-    borderRadius: '50%',
-    margin: '0 auto 16px',
-    animation: 'spin 0.8s linear infinite',
-  },
 }

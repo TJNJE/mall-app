@@ -9,7 +9,7 @@ const PRODUCT_DETAIL_KEY = ['product']
 export function useProductDetail(id: number) {
   return useQuery<Product>({
     queryKey: [...PRODUCT_DETAIL_KEY, id],
-    queryFn: () => getProductDetail(id) as unknown as Promise<Product>,
+    queryFn: () => getProductDetail(id),
     // 详情数据变更频率低，可以设置较长的 staleTime
     // 这样切回页面时不会重新请求，直接读缓存
     staleTime: 10 * 60 * 1000,

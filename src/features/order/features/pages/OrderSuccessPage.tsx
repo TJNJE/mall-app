@@ -6,70 +6,18 @@ export default function OrderSuccessPage() {
   const orderId = searchParams.get('orderId') || ''
 
   return (
-    <div style={styles.container}>
-      <div style={styles.successIcon}>✓</div>
-      <h1 style={styles.title}>下单成功！</h1>
-      <p style={styles.orderId}>订单号：{orderId}</p>
-      <div style={styles.actions}>
-        <button style={styles.viewOrdersBtn} onClick={() => navigate('/orders')}>
+    <div className="text-center py-20 px-5">
+      <div className="w-20 h-20 rounded-full bg-success text-white text-4xl leading-[5rem] mx-auto mb-6">✓</div>
+      <h1 className="text-2xl font-semibold text-gray-800 mb-3">下单成功！</h1>
+      <p className="text-sm text-gray-400 mb-10">订单号：{orderId}</p>
+      <div className="flex gap-4 justify-center">
+        <button className="px-8 py-3 text-base font-medium bg-primary text-white border-0 rounded-lg cursor-pointer" onClick={() => navigate('/orders')}>
           查看订单
         </button>
-        <button style={styles.continueBtn} onClick={() => navigate('/')}>
+        <button className="px-8 py-3 text-base bg-white text-gray-700 border border-gray-300 rounded-lg cursor-pointer" onClick={() => navigate('/')}>
           继续购物
         </button>
       </div>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  successIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: '50%',
-    background: '#52c41a',
-    color: '#fff',
-    fontSize: 40,
-    lineHeight: '80px',
-    margin: '0 auto 24px',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: 12,
-  },
-  orderId: {
-    fontSize: 14,
-    color: '#999',
-    marginBottom: 40,
-  },
-  actions: {
-    display: 'flex',
-    gap: 16,
-    justifyContent: 'center',
-  },
-  viewOrdersBtn: {
-    padding: '12px 32px',
-    fontSize: 15,
-    fontWeight: 500,
-    background: '#1677ff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  continueBtn: {
-    padding: '12px 32px',
-    fontSize: 15,
-    background: '#fff',
-    color: '#333',
-    border: '1px solid #d9d9d9',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
 }

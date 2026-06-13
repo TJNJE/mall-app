@@ -28,8 +28,11 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div style={styles.loading}>
-        <div style={styles.spinner} />
+      <div className="text-center py-16 text-gray-400">
+        <div
+          className="w-9 h-9 border-[3px] border-gray-200 border-t-primary rounded-full mx-auto mb-4 animate-spin"
+          style={{ animation: 'spin 0.8s linear infinite' }}
+        />
         <p>加载中...</p>
       </div>
     )
@@ -37,9 +40,9 @@ export default function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div style={styles.error}>
+      <div className="text-center py-16 text-gray-400">
         <p>商品不存在或加载失败</p>
-        <button style={styles.backBtn} onClick={() => navigate('/')}>
+        <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm" onClick={() => navigate('/')}>
           返回列表
         </button>
       </div>
@@ -47,79 +50,73 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div style={styles.container}>
-      <button style={styles.backBtn} type="button" onClick={() => navigate('/')}>
+    <div className="max-w-5xl mx-auto">
+      <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5" type="button" onClick={() => navigate('/')}>
         ← 返回
       </button>
 
-      <div style={styles.content}>
-        <div style={styles.left}>
-          <img src={product.image} alt={product.name} loading="lazy" style={styles.image} />
+      <div className="flex gap-10 bg-white p-8 rounded-lg border border-gray-200">
+        <div className="w-[480px] flex-shrink-0">
+          <img src={product.image} alt={product.name} loading="lazy" className="w-full h-[480px] object-cover rounded-lg" />
         </div>
 
-        <div style={styles.right}>
-          <h1 style={styles.title}>{product.name}</h1>
+        <div className="flex-1">
+          <h1 className="text-xl font-semibold text-gray-800 mb-4 leading-relaxed">{product.name}</h1>
 
           {product.tags && product.tags.length > 0 && (
-            <div style={styles.tags}>
+            <div className="flex gap-2 mb-5">
               {product.tags.map((tag) => (
-                <span key={tag} style={styles.tag}>{tag}</span>
+                <span key={tag} className="text-sm px-2 py-0.5 bg-red-50 text-red-500 rounded border border-red-200">{tag}</span>
               ))}
             </div>
           )}
 
-          <div style={styles.priceBox}>
-            <span style={styles.price}>¥{product.price}</span>
-            <span style={styles.originalPrice}>¥{product.originalPrice}</span>
-            <span style={styles.discount}>省 ¥{product.originalPrice - product.price}</span>
+          <div className="flex items-baseline gap-3 mb-7 pb-5 border-b border-gray-100">
+            <span className="text-3xl font-bold text-red-600">¥{product.price}</span>
+            <span className="text-sm text-gray-500 line-through">¥{product.originalPrice}</span>
+            <span className="text-xs text-white bg-red-500 px-2 py-0.5 rounded">省 ¥{product.originalPrice - product.price}</span>
           </div>
 
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>分类</span>
-            <span style={styles.infoValue}>{product.category}</span>
+          <div className="flex mb-3.5 text-sm">
+            <span className="w-20 text-gray-500 flex-shrink-0">分类</span>
+            <span className="text-gray-800">{product.category}</span>
           </div>
 
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>库存</span>
-            <span style={{ ...styles.infoValue, color: product.stock > 0 ? '#52c41a' : '#ff4d4f' }}>
+          <div className="flex mb-3.5 text-sm">
+            <span className="w-20 text-gray-500 flex-shrink-0">库存</span>
+            <span className={product.stock > 0 ? 'text-gray-800' : 'text-[#ff4d4f]'}>
               {product.stock > 0 ? `有货（${product.stock}件）` : '暂时缺货'}
             </span>
           </div>
 
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>评分</span>
-            <span style={styles.infoValue}>
+          <div className="flex mb-3.5 text-sm">
+            <span className="w-20 text-gray-500 flex-shrink-0">评分</span>
+            <span className="text-gray-800">
               {'★'.repeat(Math.floor(product.rating))}{'☆'.repeat(5 - Math.floor(product.rating))}
               {' '}{product.rating}
             </span>
           </div>
 
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>评价数</span>
-            <span style={styles.infoValue}>{product.reviews.toLocaleString()}</span>
+          <div className="flex mb-3.5 text-sm">
+            <span className="w-20 text-gray-500 flex-shrink-0">评价数</span>
+            <span className="text-gray-800">{product.reviews.toLocaleString()}</span>
           </div>
 
-          <div style={styles.description}>
-            <h3 style={styles.descTitle}>商品介绍</h3>
-            <p style={styles.descText}>{product.description}</p>
+          <div className="mt-7 pt-5 border-t border-gray-100">
+            <h3 className="text-base font-semibold text-gray-800 mb-3">商品介绍</h3>
+            <p className="text-sm text-gray-600 leading-[1.8]">{product.description}</p>
           </div>
 
-          <div style={styles.action}>
+          <div className="mt-8 pt-5 border-t border-gray-100 flex gap-3">
             <button
-              style={{
-                ...styles.buyBtn,
-                opacity: product.stock <= 0 ? 0.5 : 1,
-              }}
+              className={`flex-1 py-3.5 text-base font-semibold text-white border-0 rounded-lg cursor-pointer ${product.stock <= 0 ? 'opacity-50' : 'bg-primary'}`}
               disabled={product.stock <= 0}
               onClick={handleBuyNow}
             >
               立即购买
             </button>
             <button
-              style={{
-                ...styles.addToCartBtn,
-                opacity: product.stock <= 0 ? 0.5 : 1,
-              }}
+              className={`flex-1 py-3.5 text-base font-semibold border rounded-lg cursor-pointer ${product.stock <= 0 ? 'opacity-50' : 'bg-white text-primary border-primary'}`}
               disabled={product.stock <= 0}
               onClick={handleAddToCart}
             >
@@ -130,106 +127,4 @@ export default function ProductDetailPage() {
       </div>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: { maxWidth: 1200, margin: '0 auto' },
-  backBtn: {
-    border: '1px solid #d9d9d9',
-    background: '#fff',
-    padding: '8px 16px',
-    borderRadius: 6,
-    cursor: 'pointer',
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  content: {
-    display: 'flex',
-    gap: 40,
-    background: '#fff',
-    padding: 32,
-    borderRadius: 8,
-    border: '1px solid #f0f0f0',
-  },
-  left: { width: 480, flexShrink: 0 },
-  image: {
-    width: '100%',
-    height: 480,
-    objectFit: 'cover',
-    borderRadius: 8,
-  },
-  right: { flex: 1 },
-  title: {
-    fontSize: 22,
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: 16,
-    lineHeight: 1.4,
-  },
-  tags: { display: 'flex', gap: 8, marginBottom: 20 },
-  tag: {
-    fontSize: 12,
-    padding: '3px 8px',
-    background: '#fff1f0',
-    color: '#ff4d4f',
-    borderRadius: 3,
-    border: '1px solid #ffccc7',
-  },
-  priceBox: {
-    display: 'flex',
-    alignItems: 'baseline',
-    gap: 12,
-    marginBottom: 28,
-    paddingBottom: 20,
-    borderBottom: '1px solid #f0f0f0',
-  },
-  price: { fontSize: 32, fontWeight: 700, color: '#e74c3c' },
-  originalPrice: { fontSize: 16, color: '#999', textDecoration: 'line-through' },
-  discount: {
-    fontSize: 13,
-    color: '#fff',
-    background: '#ff4d4f',
-    padding: '2px 8px',
-    borderRadius: 3,
-  },
-  infoRow: { display: 'flex', marginBottom: 14, fontSize: 14 },
-  infoLabel: { width: 80, color: '#999', flexShrink: 0 },
-  infoValue: { color: '#333' },
-  description: { marginTop: 28, paddingTop: 20, borderTop: '1px solid #f0f0f0' },
-  descTitle: { fontSize: 16, fontWeight: 600, color: '#333', marginBottom: 12 },
-  descText: { fontSize: 14, color: '#666', lineHeight: 1.8 },
-  action: { marginTop: 32, paddingTop: 20, borderTop: '1px solid #f0f0f0', display: 'flex', gap: 12 },
-  buyBtn: {
-    flex: 1,
-    padding: '14px 0',
-    fontSize: 16,
-    fontWeight: 600,
-    background: '#1677ff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  addToCartBtn: {
-    flex: 1,
-    padding: '14px 0',
-    fontSize: 16,
-    fontWeight: 600,
-    background: '#fff',
-    color: '#1677ff',
-    border: '1px solid #1677ff',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  loading: { textAlign: 'center', padding: 60, color: '#999' },
-  spinner: {
-    width: 36,
-    height: 36,
-    border: '3px solid #f3f3f3',
-    borderTopColor: '#1677ff',
-    borderRadius: '50%',
-    margin: '0 auto 16px',
-    animation: 'spin 0.8s linear infinite',
-  },
-  error: { textAlign: 'center', padding: 60, color: '#999' },
 }

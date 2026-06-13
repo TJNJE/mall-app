@@ -15,9 +15,9 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 })
 
 request.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
+  <T>(response: AxiosResponse<ApiResponse<T>>) => {
     const { code, message, data } = response.data
-    if (code === 0) return data as any
+    if (code === 0) return data as T
     return Promise.reject(new Error(message || '请求失败'))
   },
   (error) => {
