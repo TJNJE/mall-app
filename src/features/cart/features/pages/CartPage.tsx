@@ -7,6 +7,13 @@ export default function CartPage() {
   const count = useCartStore((s) => s.getCount())
   const amount = useCartStore((s) => s.getAmount())
 
+  const handleCheckout = () => {
+    // 将购物车所有商品 ID + 数量拼成 URL 参数传递给下单页
+    const params = new URLSearchParams()
+    params.set('items', JSON.stringify(items.map(i => ({ productId: i.productId, quantity: i.quantity }))))
+    navigate(`/checkout?${params.toString()}`)
+  }
+
   if (items.length === 0) {
     return (
       <div className="max-w-[800px] mx-auto">
@@ -49,7 +56,7 @@ export default function CartPage() {
       <div className="flex items-center justify-end gap-6 mt-5 pb-5">
         <span>共 {count} 件</span>
         <span className="text-xl font-bold text-red-600">合计：¥{amount.toFixed(2)}</span>
-        <button className="px-8 py-3 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer" type="button" onClick={() => navigate('/checkout')}>
+        <button className="px-8 py-3 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer" type="button" onClick={handleCheckout}>
           去结算
         </button>
       </div>
