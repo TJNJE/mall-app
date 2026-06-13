@@ -7,8 +7,6 @@ export const checkoutSchema = z.object({
   city: z.string().min(1, '请输入城市'),
   district: z.string().min(1, '请输入区县'),
   detail: z.string().min(1, '请输入详细地址'),
-}).extend({
-  quantity: z.number().min(1),
 })
 
 export type CheckoutForm = z.infer<typeof checkoutSchema>
