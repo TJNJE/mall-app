@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getProductDetail } from '@/api'
 import { useCreateOrder } from '../hooks/useCreateOrder'
 import { useCartStore } from '@/features/cart/stores/cartStore'
+import { useToast } from '@/common/components/ToastProvider'
 import { checkoutSchema, type CheckoutForm } from '@/common/lib/formSchemas'
 import type { Product } from '@/types'
 import { Input } from '@/common/components/ui/Input'
@@ -13,16 +14,6 @@ import { Textarea } from '@/common/components/ui/Textarea'
 interface CartItemParam {
   productId: number
   quantity: number
-}
-
-// 下单页显示的商品项（可能部分还未加载完）
-interface CheckoutItem {
-  productId: number
-  name: string
-  price: number
-  image: string
-  quantity: number
-  loaded: boolean
 }
 
 export default function CheckoutPage() {
@@ -36,8 +27,9 @@ export default function CheckoutPage() {
 
   const { mutate: checkout, isPending } = useCreateOrder()
   const clearCart = useCartStore((s) => s.clear)
+  const { error: showError } = useToast()
 
-  // 购物车商品详情：并发拉取所有商品，任一失败也不阻塞页面
+  // 购物车商品详情：并发拉取所有商品
   const { data: productsMap } = useQuery({
     queryKey: ['checkout-products', cartItems],
     queryFn: async () => {
@@ -55,7 +47,6 @@ export default function CheckoutPage() {
       return map
     },
     enabled: fromCart && cartItems.length > 0,
-    // 购物车商品列表不变就不重新拉取
     staleTime: 0,
   })
 
@@ -69,7 +60,9 @@ export default function CheckoutPage() {
   })
 
   // 构建显示的商品列表
-  let items: CheckoutItem[] = []
+  let items: Array<{ productId: number; name: string; price: number; image: string; quantity: number }> = []
+  let allLoaded = false
+
   if (fromCart && productsMap) {
     items = cartItems.map(({ productId, quantity }) => {
       const cached = productsMap.get(productId)
@@ -79,9 +72,9 @@ export default function CheckoutPage() {
         price: cached?.price ?? 0,
         image: cached?.image ?? '',
         quantity,
-        loaded: !!cached,
       }
     })
+    allLoaded = true
   } else if (!fromCart && singleProduct) {
     const quantity = Number(searchParams.get('quantity')) || 1
     items = [{
@@ -90,11 +83,10 @@ export default function CheckoutPage() {
       price: singleProduct.price,
       image: singleProduct.image,
       quantity,
-      loaded: true,
     }]
+    allLoaded = true
   }
 
-  const allLoaded = items.every((i) => i.loaded)
   const canSubmit = allLoaded && items.length > 0
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0)
@@ -138,6 +130,9 @@ export default function CheckoutPage() {
         onSuccess: (data) => {
           if (fromCart) clearCart()
           navigate(`/order/success?orderId=${data.orderId}`)
+        },
+        onError: (err) => {
+          showError(err instanceof Error ? err.message : '下单失败')
         },
       },
     )
