@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getProductDetail } from '@/api'
@@ -15,6 +15,16 @@ interface CartItemParam {
   quantity: number
 }
 
+// 下单页显示的商品项（可能部分还未加载完）
+interface CheckoutItem {
+  productId: number
+  name: string
+  price: number
+  image: string
+  quantity: number
+  loaded: boolean
+}
+
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -27,63 +37,65 @@ export default function CheckoutPage() {
   const { mutate: checkout, isPending } = useCreateOrder()
   const clearCart = useCartStore((s) => s.clear)
 
-  // 缓存商品详情（key: productId → Product）
-  const [productCache, setProductCache] = useState<Map<number, Product>>(new Map())
-
-  // 拉取购物车中所有商品详情
-  useEffect(() => {
-    if (!fromCart || cartItems.length === 0) return
-
-    setProductCache(prev => {
-      const cache = new Map(prev)
-      // 先收集缺失的 productId
-      const missing = cartItems.filter(({ productId }) => !cache.has(productId)).map(({ productId }) => productId)
-      if (missing.length === 0) return prev
-
-      // 并发请求所有缺失的商品
-      Promise.all(missing.map(id => getProductDetail(id).catch(() => null))).then(results => {
-        results.forEach((res, i) => {
-          const id = missing[i]
-          // res 可能是 Product 或 Promise 的 resolve 结果（取决于 Axios 拦截器是否已解包）
-          // 由于接口返回 { code: 0, data: Product }，拦截器解包后 queryFn 拿到 Product
-          // 但这里直接调用 API 函数，返回的是 Promise<Product>
-          if (res) {
-            cache.set(id, res)
+  // 购物车商品详情：并发拉取所有商品，任一失败也不阻塞页面
+  const { data: productsMap } = useQuery({
+    queryKey: ['checkout-products', cartItems],
+    queryFn: async () => {
+      const map = new Map<number, Product>()
+      await Promise.all(
+        cartItems.map(async ({ productId }) => {
+          try {
+            const product = await getProductDetail(productId)
+            map.set(productId, product)
+          } catch {
+            // 某个商品请求失败，跳过
           }
-        })
-        setProductCache(new Map(cache))
-      })
+        }),
+      )
+      return map
+    },
+    enabled: fromCart && cartItems.length > 0,
+    // 购物车商品列表不变就不重新拉取
+    staleTime: 0,
+  })
 
-      return cache
+  // 商品页直接下单：拉取单个商品详情
+  const productIdFromUrl = Number(searchParams.get('id')) || 1
+  const { data: singleProduct } = useQuery({
+    queryKey: ['checkout-product', productIdFromUrl],
+    queryFn: () => getProductDetail(productIdFromUrl),
+    enabled: !fromCart,
+    staleTime: 0,
+  })
+
+  // 构建显示的商品列表
+  let items: CheckoutItem[] = []
+  if (fromCart && productsMap) {
+    items = cartItems.map(({ productId, quantity }) => {
+      const cached = productsMap.get(productId)
+      return {
+        productId,
+        name: cached?.name ?? '商品详情加载中...',
+        price: cached?.price ?? 0,
+        image: cached?.image ?? '',
+        quantity,
+        loaded: !!cached,
+      }
     })
-  }, [fromCart, cartItems]) // eslint-disable-line react-hooks/exhaustive-deps
+  } else if (!fromCart && singleProduct) {
+    const quantity = Number(searchParams.get('quantity')) || 1
+    items = [{
+      productId: singleProduct.id,
+      name: singleProduct.name,
+      price: singleProduct.price,
+      image: singleProduct.image,
+      quantity,
+      loaded: true,
+    }]
+  }
 
-  // 构建商品列表
-  const items = fromCart
-    ? cartItems.map(({ productId, quantity }) => {
-        const cached = productCache.get(productId)
-        return {
-          productId,
-          name: cached?.name ?? '加载中...',
-          price: cached?.price ?? 0,
-          image: cached?.image ?? '',
-          quantity,
-        }
-      })
-    : // 商品页直接下单（单件，数量为 URL 参数）
-      (() => {
-        const productId = Number(searchParams.get('id')) || 1
-        const quantity = Number(searchParams.get('quantity')) || 1
-        const cached = productCache.get(productId)
-        return cached ? [{
-          productId,
-          name: cached.name,
-          price: cached.price,
-          image: cached.image,
-          quantity,
-        }] : []
-      })()
-
+  const allLoaded = items.every((i) => i.loaded)
+  const canSubmit = allLoaded && items.length > 0
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -131,26 +143,13 @@ export default function CheckoutPage() {
     )
   }
 
-  // 商品页需要单独拉取商品详情
-  useEffect(() => {
-    if (fromCart) return
-    const productId = Number(searchParams.get('id')) || 1
-    if (!productCache.has(productId)) {
-      getProductDetail(productId).then(p => {
-        setProductCache(prev => {
-          const next = new Map(prev)
-          next.set(productId, p)
-          return next
-        })
-      })
-    }
-  }, [fromCart, productCache]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (items.length === 0) {
+  // 加载中
+  if (!canSubmit) {
     return (
       <div className="max-w-[800px] mx-auto">
         <h1 className="text-xl font-semibold text-gray-800 mb-6">确认订单</h1>
         <div className="text-center py-16 text-gray-400">
+          <div className="w-8 h-8 border-3 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-4" />
           <p>加载中...</p>
         </div>
       </div>
@@ -210,7 +209,12 @@ export default function CheckoutPage() {
         <div className="flex flex-col gap-4">
           {items.map((item) => (
             <div key={item.productId} className="flex items-center gap-4">
-              <img src={item.image} alt={item.name} loading="lazy" className="w-24 h-24 object-cover rounded-lg" />
+              <img
+                src={item.image || undefined}
+                alt={item.name}
+                loading="lazy"
+                className="w-24 h-24 object-cover rounded-lg bg-gray-100"
+              />
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-gray-800 mb-2">{item.name}</h3>
                 <div className="flex items-center gap-4">
@@ -244,7 +248,7 @@ export default function CheckoutPage() {
       <div className="mb-6">
         <button
           type="button"
-          className="w-full py-3.5 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer"
+          className="w-full py-3.5 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isPending}
           onClick={handleSubmit(onSubmit)}
         >
