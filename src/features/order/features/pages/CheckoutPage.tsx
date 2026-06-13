@@ -1,7 +1,9 @@
-import { useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useProductDetail } from '@/features/product/features/hooks/useProductDetail'
 import { useCreateOrder } from '../hooks/useCreateOrder'
+import { checkoutSchema, type CheckoutForm } from '@/common/lib/formSchemas'
 
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams()
@@ -12,42 +14,42 @@ export default function CheckoutPage() {
   const { data: product } = useProductDetail(productId)
   const { mutate: checkout, isPending } = useCreateOrder()
 
-  // 表单状态
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    province: '',
-    city: '',
-    district: '',
-    detail: '',
-    quantity: initialQuantity,
+  // react-hook-form 接管表单：自动管理字段状态、验证、错误
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CheckoutForm>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      province: '',
+      city: '',
+      district: '',
+      detail: '',
+      quantity: initialQuantity,
+    },
   })
 
-  const errors: Record<string, string> = {}
-  if (!form.name.trim()) errors.name = '请输入姓名'
-  if (!form.phone.trim()) errors.phone = '请输入手机号'
-  else if (!/^1\d{10}$/.test(form.phone)) errors.phone = '手机号格式不正确'
-  if (!form.province.trim()) errors.province = '请选择省份'
-  if (!form.city.trim()) errors.city = '请选择城市'
-  if (!form.district.trim()) errors.district = '请选择区域'
-  if (!form.detail.trim()) errors.detail = '请填写详细地址'
+  const quantity = watch('quantity', initialQuantity)
+  const totalPrice = product ? product.price * quantity : 0
 
-  const isValid = Object.keys(errors).length === 0
-  const totalPrice = product ? product.price * form.quantity : 0
-
-  const handleSubmit = () => {
-    if (!isValid || !product) return
+  const onSubmit = (values: CheckoutForm) => {
+    if (!product) return
 
     checkout(
       {
-        items: [{ productId: product.id, quantity: form.quantity }],
+        items: [{ productId: product.id, quantity }],
         address: {
-          name: form.name,
-          phone: form.phone,
-          province: form.province,
-          city: form.city,
-          district: form.district,
-          detail: form.detail,
+          name: values.name,
+          phone: values.phone,
+          province: values.province,
+          city: values.city,
+          district: values.district,
+          detail: values.detail,
         },
       },
       {
@@ -67,6 +69,11 @@ export default function CheckoutPage() {
     )
   }
 
+  // 受控组件：手动管理数量
+  const handleQuantityChange = (delta: number) => {
+    setValue('quantity', Math.max(1, quantity + delta), { shouldValidate: true })
+  }
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>确认订单</h1>
@@ -77,48 +84,42 @@ export default function CheckoutPage() {
         <div style={styles.formGrid}>
           <InputField
             label="姓名"
-            value={form.name}
-            error={errors.name}
+            error={errors.name?.message}
             placeholder="请输入收货人姓名"
-            onChange={(v) => setForm({ ...form, name: v })}
+            {...register('name')}
           />
           <InputField
             label="手机号"
-            value={form.phone}
-            error={errors.phone}
+            error={errors.phone?.message}
             placeholder="请输入收货人手机号"
-            onChange={(v) => setForm({ ...form, phone: v })}
+            {...register('phone')}
           />
           <InputField
             label="省份"
-            value={form.province}
-            error={errors.province}
+            error={errors.province?.message}
             placeholder="请输入省份"
-            onChange={(v) => setForm({ ...form, province: v })}
+            {...register('province')}
           />
           <InputField
             label="城市"
-            value={form.city}
-            error={errors.city}
+            error={errors.city?.message}
             placeholder="请输入城市"
-            onChange={(v) => setForm({ ...form, city: v })}
+            {...register('city')}
           />
           <InputField
             label="区县"
-            value={form.district}
-            error={errors.district}
+            error={errors.district?.message}
             placeholder="请输入区县"
-            onChange={(v) => setForm({ ...form, district: v })}
+            {...register('district')}
           />
           <div style={styles.fullWidthInput}>
             <label style={styles.label}>详细地址</label>
             <textarea
-              style={styles.textarea}
+              style={{ ...styles.textarea, borderColor: errors.detail ? '#ff4d4f' : undefined }}
               placeholder="请输入街道、门牌号等详细地址"
-              value={form.detail}
-              onChange={(e) => setForm({ ...form, detail: e.target.value })}
+              {...register('detail')}
             />
-            {errors.detail && <span style={styles.error}>{errors.detail}</span>}
+            {errors.detail && <span style={styles.error}>{errors.detail.message}</span>}
           </div>
         </div>
       </div>
@@ -127,23 +128,17 @@ export default function CheckoutPage() {
       <div style={styles.section}>
         <h2 style={styles.sectionTitle}>商品信息</h2>
         <div style={styles.cartItem}>
-          <img src={product.image} alt={product.name} style={styles.cartImage} />
+          <img src={product.image} alt={product.name} loading="lazy" style={styles.cartImage} />
           <div style={styles.cartInfo}>
             <h3 style={styles.cartName}>{product.name}</h3>
             <span style={styles.cartPrice}>¥{product.price}</span>
           </div>
           <div style={styles.quantityControl}>
-            <button
-              style={styles.qtyBtn}
-              onClick={() => setForm({ ...form, quantity: Math.max(1, form.quantity - 1) })}
-            >
+            <button type="button" style={styles.qtyBtn} onClick={() => handleQuantityChange(-1)}>
               -
             </button>
-            <span style={styles.qtyValue}>{form.quantity}</span>
-            <button
-              style={styles.qtyBtn}
-              onClick={() => setForm({ ...form, quantity: form.quantity + 1 })}
-            >
+            <span style={styles.qtyValue}>{quantity}</span>
+            <button type="button" style={styles.qtyBtn} onClick={() => handleQuantityChange(1)}>
               +
             </button>
           </div>
@@ -154,7 +149,7 @@ export default function CheckoutPage() {
       <div style={styles.summary}>
         <div style={styles.summaryRow}>
           <span>商品数量</span>
-          <span>{form.quantity} 件</span>
+          <span>{quantity} 件</span>
         </div>
         <div style={{ ...styles.summaryRow, ...styles.totalRow }}>
           <span style={styles.totalLabel}>合计</span>
@@ -165,12 +160,13 @@ export default function CheckoutPage() {
       {/* 提交按钮 */}
       <div style={styles.submitArea}>
         <button
+          type="submit"
           style={{
             ...styles.submitBtn,
             opacity: isPending ? 0.6 : 1,
           }}
-          disabled={isPending || !isValid}
-          onClick={handleSubmit}
+          disabled={isPending}
+          onClick={handleSubmit(onSubmit)}
         >
           {isPending ? '提交中...' : '提交订单'}
         </button>
@@ -179,28 +175,24 @@ export default function CheckoutPage() {
   )
 }
 
-// 表单项组件
+// 表单项组件：react-hook-form 通过 spread 注入 register 和 ref
 function InputField({
   label,
-  value,
   error,
   placeholder,
-  onChange,
+  ...rest
 }: {
   label: string
-  value: string
   error?: string
   placeholder: string
-  onChange: (v: string) => void
-}) {
+} & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div style={styles.formItem}>
       <label style={styles.label}>{label}</label>
       <input
         style={{ ...styles.input, borderColor: error ? '#ff4d4f' : undefined }}
         placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        {...rest}
       />
       {error && <span style={styles.error}>{error}</span>}
     </div>

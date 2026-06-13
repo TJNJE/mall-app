@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useProductList } from '../hooks/useProductList'
+import { Skeleton } from '@/common/components/Skeleton'
 
 // 商品卡片
 function ProductCard({ product }: { product: { id: number; name: string; price: number; image: string; tags?: string[] } }) {
@@ -11,7 +12,7 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
       style={styles.card}
       onClick={() => navigate(`/product/${product.id}`)}
     >
-      <img src={product.image} alt={product.name} style={styles.image} />
+      <img src={product.image} alt={product.name} loading="lazy" style={styles.image} />
       <div style={styles.cardBody}>
         <h3 style={styles.title}>{product.name}</h3>
         <div style={styles.priceRow}>
@@ -19,6 +20,22 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
           {product.tags && product.tags.length > 0 && (
             <span style={styles.tag}>{product.tags[0]}</span>
           )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 骨架屏卡片
+function SkeletonCard() {
+  return (
+    <div style={styles.card}>
+      <Skeleton width="100%" height={240} borderRadius={0} style={{ borderBottom: '1px solid #f0f0f0' }} />
+      <div style={styles.cardBody}>
+        <Skeleton width="80%" height={14} style={{ marginBottom: 8 }} />
+        <div style={styles.priceRow}>
+          <Skeleton width="30%" height={18} />
+          <Skeleton width="50px" height={18} />
         </div>
       </div>
     </div>
@@ -68,8 +85,6 @@ export default function ProductListPage() {
   const [keyword, setKeyword] = useState('')
   const [page, setPage] = useState(1)
 
-  // 用 queryKey 的变化触发重新请求
-  // 和 Vue 的 computed/watch 类似，keyword 或 page 变了，useQuery 自动重新请求
   const { data, isLoading } = useProductList({
     page,
     pageSize: 8,
@@ -79,19 +94,22 @@ export default function ProductListPage() {
   const products = data?.list ?? []
   const total = data?.total ?? 0
 
-  // 防抖：用户输入结束后 500ms 再搜索，避免每次按键都发请求
-  // （Vue 中你也会用 @input 事件 + setTimeout 做类似处理）
   const [searchInput, setSearchInput] = useState('')
   const handleSearch = () => {
     setKeyword(searchInput)
     setPage(1)
   }
 
+  // 骨架屏：渲染 8 个空卡片占位
   if (isLoading) {
     return (
-      <div style={styles.loading}>
-        <div style={styles.spinner} />
-        <p>加载中...</p>
+      <div>
+        <h1 style={styles.heading}>商品列表</h1>
+        <div style={styles.grid}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
       </div>
     )
   }
@@ -231,20 +249,6 @@ const styles: Record<string, React.CSSProperties> = {
   pageInfo: {
     fontSize: 14,
     color: '#666',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: 60,
-    color: '#999',
-  },
-  spinner: {
-    width: 36,
-    height: 36,
-    border: '3px solid #f3f3f3',
-    borderTopColor: '#1677ff',
-    borderRadius: '50%',
-    margin: '0 auto 16px',
-    animation: 'spin 0.8s linear infinite',
   },
   empty: {
     textAlign: 'center',

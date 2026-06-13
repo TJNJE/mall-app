@@ -28,7 +28,7 @@ export default function CartPage() {
       <div style={styles.list}>
         {items.map((item) => (
           <div key={item.productId} style={styles.item}>
-            <img src={item.productImage} alt={item.productName} style={styles.image} />
+            <img src={item.productImage} alt={item.productName} loading="lazy" style={styles.image} />
             <div style={styles.info}>
               <h3 style={styles.name}>{item.productName}</h3>
               <span style={styles.price}>¥{item.price}</span>

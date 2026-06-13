@@ -54,7 +54,7 @@ export default function ProductDetailPage() {
 
       <div style={styles.content}>
         <div style={styles.left}>
-          <img src={product.image} alt={product.name} style={styles.image} />
+          <img src={product.image} alt={product.name} loading="lazy" style={styles.image} />
         </div>
 
         <div style={styles.right}>
