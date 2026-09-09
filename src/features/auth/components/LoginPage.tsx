@@ -11,7 +11,7 @@ export default function LoginPage() {
     e.preventDefault()
     if (!username.trim()) return
     login(username)
-    navigate('/')
+    void navigate('/')
   }
 
   return (

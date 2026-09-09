@@ -23,7 +23,9 @@ export default function CheckoutPage() {
   // 判断来源：有 items 参数 → 来自购物车；只有 id → 来自商品详情页
   const rawItems = searchParams.get('items')
   const fromCart = !!rawItems
-  const cartItems: CartItemParam[] = fromCart ? JSON.parse(rawItems) : []
+  const cartItems: CartItemParam[] = fromCart
+    ? (JSON.parse(rawItems ?? '[]') as CartItemParam[])
+    : []
 
   const { mutate: checkout, isPending } = useCreateOrder()
   const clearCart = useCartStore((s) => s.clear)
@@ -137,7 +139,7 @@ export default function CheckoutPage() {
       {
         onSuccess: (data) => {
           if (fromCart) clearCart()
-          navigate(`/order/success?orderId=${data.orderId}`)
+          void navigate(`/order/success?orderId=${data.orderId}`)
         },
         onError: (err) => {
           showError(err instanceof Error ? err.message : '下单失败')
@@ -257,7 +259,9 @@ export default function CheckoutPage() {
           type="button"
           className="w-full py-3.5 text-base font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isPending}
-          onClick={handleSubmit(onSubmit)}
+          onClick={(e) => {
+            void handleSubmit(onSubmit)(e)
+          }}
         >
           {isPending ? '提交中...' : '提交订单'}
         </button>

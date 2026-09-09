@@ -14,7 +14,9 @@ function ProductCard({
   return (
     <div
       className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-transform duration-200 hover:shadow-md"
-      onClick={() => navigate(`/product/${product.id}`)}
+      onClick={() => {
+        void navigate(`/product/${product.id}`)
+      }}
     >
       <img
         src={product.image}

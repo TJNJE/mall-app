@@ -14,7 +14,7 @@ export default function CartPage() {
       'items',
       JSON.stringify(items.map((i) => ({ productId: i.productId, quantity: i.quantity }))),
     )
-    navigate(`/checkout?${params.toString()}`)
+    void navigate(`/checkout?${params.toString()}`)
   }
 
   if (items.length === 0) {
@@ -26,7 +26,9 @@ export default function CartPage() {
           <button
             className="px-8 py-3 text-base bg-white text-gray-700 border border-gray-300 rounded-lg cursor-pointer"
             type="button"
-            onClick={() => navigate('/')}
+            onClick={() => {
+              void navigate('/')
+            }}
           >
             去逛逛
           </button>
@@ -58,14 +60,18 @@ export default function CartPage() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                onClick={() => {
+                  void updateQuantity(item.productId, item.quantity - 1)
+                }}
               >
                 -
               </button>
               <span>{item.quantity}</span>
               <button
                 type="button"
-                onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                onClick={() => {
+                  void updateQuantity(item.productId, item.quantity + 1)
+                }}
               >
                 +
               </button>
@@ -76,7 +82,9 @@ export default function CartPage() {
             <button
               type="button"
               className="border-0 bg-transparent text-gray-400 cursor-pointer text-xs"
-              onClick={() => removeItem(item.productId)}
+              onClick={() => {
+                void removeItem(item.productId)
+              }}
             >
               删除
             </button>

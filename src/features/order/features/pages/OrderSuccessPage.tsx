@@ -15,13 +15,17 @@ export default function OrderSuccessPage() {
       <div className="flex gap-4 justify-center">
         <button
           className="px-8 py-3 text-base font-medium bg-primary text-white border-0 rounded-lg cursor-pointer"
-          onClick={() => navigate('/orders')}
+          onClick={() => {
+            void navigate('/orders')
+          }}
         >
           查看订单
         </button>
         <button
           className="px-8 py-3 text-base bg-white text-gray-700 border border-gray-300 rounded-lg cursor-pointer"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            void navigate('/')
+          }}
         >
           继续购物
         </button>

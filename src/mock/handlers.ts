@@ -17,7 +17,7 @@ interface MockOrder {
 function getOrders(): MockOrder[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) return JSON.parse(raw) as MockOrder[]
   } catch {
     // ignore
   }

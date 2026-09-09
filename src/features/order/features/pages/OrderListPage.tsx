@@ -23,7 +23,9 @@ function OrderCard({
   return (
     <div
       className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-shadow duration-200 hover:shadow-md"
-      onClick={() => navigate(`/order/${order.id}`)}
+      onClick={() => {
+        void navigate(`/order/${order.id}`)
+      }}
     >
       <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
         <span className="text-xs text-gray-400">订单号：{order.id}</span>

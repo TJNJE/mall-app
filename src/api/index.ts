@@ -17,27 +17,23 @@ export function login(username: string) {
 // ========== 商品相关 ==========
 
 export function getProductList(params: { page?: number; pageSize?: number; keyword?: string }) {
-  return request.get<ProductListResponse>('/api/products', {
-    params,
-  }) as unknown as Promise<ProductListResponse>
+  return request.get<ProductListResponse>('/api/products', { params })
 }
 
 export function getProductDetail(id: number) {
-  return request.get<Product>('/api/products/' + id) as unknown as Promise<Product>
+  return request.get<Product>('/api/products/' + id)
 }
 
 // ========== 订单相关 ==========
 
 export function createOrder(data: CheckoutRequest) {
-  return request.post<CheckoutResponse>('/api/orders', data) as unknown as Promise<CheckoutResponse>
+  return request.post<CheckoutResponse>('/api/orders', data)
 }
 
 export function getOrderList(params: { page?: number; pageSize?: number }) {
-  return request.get<OrderListResponse>('/api/orders', {
-    params,
-  }) as unknown as Promise<OrderListResponse>
+  return request.get<OrderListResponse>('/api/orders', { params })
 }
 
 export function getOrderDetail(id: string) {
-  return request.get<Order>('/api/orders/' + id) as unknown as Promise<Order>
+  return request.get<Order>('/api/orders/' + id)
 }

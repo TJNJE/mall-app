@@ -18,12 +18,12 @@ export default function ProductDetailPage() {
       productImage: product.image,
       price: product.price,
     })
-    navigate('/cart')
+    void navigate('/cart')
   }
 
   const handleBuyNow = () => {
     if (!product) return
-    navigate(`/checkout?id=${productId}&quantity=1`)
+    void navigate(`/checkout?id=${productId}&quantity=1`)
   }
 
   if (isLoading) {
@@ -44,7 +44,9 @@ export default function ProductDetailPage() {
         <p>商品不存在或加载失败</p>
         <button
           className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            void navigate('/')
+          }}
         >
           返回列表
         </button>
@@ -57,7 +59,9 @@ export default function ProductDetailPage() {
       <button
         className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
         type="button"
-        onClick={() => navigate('/')}
+        onClick={() => {
+          void navigate('/')
+        }}
       >
         ← 返回
       </button>

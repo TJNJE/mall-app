@@ -36,7 +36,9 @@ export default function OrderDetailPage() {
         <p>订单不存在</p>
         <button
           className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
-          onClick={() => navigate('/orders')}
+          onClick={() => {
+            void navigate('/orders')
+          }}
         >
           返回订单列表
         </button>
@@ -50,7 +52,9 @@ export default function OrderDetailPage() {
     <div className="max-w-[800px] mx-auto">
       <button
         className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
-        onClick={() => navigate('/orders')}
+        onClick={() => {
+          void navigate('/orders')
+        }}
       >
         ← 返回
       </button>
