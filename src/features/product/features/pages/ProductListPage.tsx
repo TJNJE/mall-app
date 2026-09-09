@@ -160,7 +160,7 @@ export default function ProductListPage() {
   if (isLoading) {
     return (
       <div>
-        <h1 className="text-2xl mb-5 text-gray-800">商品列表</h1>
+        <h1 className="text-2xl mb-5 text-gray-800 dark:text-gray-200">商品列表</h1>
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <SkeletonCard key={i} />
@@ -172,7 +172,7 @@ export default function ProductListPage() {
 
   return (
     <div>
-      <h1 className="text-2xl mb-5 text-gray-800">商品列表</h1>
+      <h1 className="text-2xl mb-5 text-gray-800 dark:text-gray-200">商品列表</h1>
 
       {/* 搜索栏 */}
       <div className="flex gap-2.5 mb-6">

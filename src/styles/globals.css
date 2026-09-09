@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* 暗黑模式 class 策略（S5）：html.dark 下启用 dark: 变体 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #1677ff;
   --color-primary-hover: #4096ff;
@@ -10,4 +13,25 @@
   --color-text-secondary: #666666;
   --color-text-muted: #999999;
   --color-price: #e74c3c;
+
+  /* 语义表面 token（S5 暗黑首批适配） */
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9fafb;
+  --color-border-subtle: #f3f4f6;
+  --color-text-strong: #1f2937;
+  --color-text-inverse: #d1d5db;
+}
+
+/* 暗黑下覆盖语义 token：组件引用 bg-surface 等工具类即自动切换 */
+.dark {
+  --color-surface: #1f2937;
+  --color-surface-hover: #273244;
+  --color-border-subtle: #374151;
+  --color-text-strong: #f3f4f6;
+  --color-text-inverse: #e5e7eb;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text-strong);
 }

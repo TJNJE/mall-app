@@ -30,11 +30,19 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
         if (e.target === overlayRef.current) onClose()
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden"
+      >
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+          <h3 id="modal-title" className="text-lg font-semibold text-gray-800">
+            {title}
+          </h3>
           <button
             onClick={onClose}
+            aria-label="关闭弹窗"
             className="text-gray-400 hover:text-gray-600 text-xl leading-none"
             type="button"
           >
