@@ -5,11 +5,34 @@ import path from 'path'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 
+// S4 安全：仅生产构建注入 CSP meta。
+// 不放 index.html 静态原因：Vite dev 注入 inline script + HMR ws，会被 script-src 'self' 拦截。
+// 若后续接入 Sentry，需在 connect-src 追加其上报域名（见 ADR-0001 缓解措施 3）。
+const cspInjectPlugin = () => ({
+  name: 'csp-inject',
+  apply: 'build' as const,
+  transformIndexHtml(html: string): string {
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data:",
+      "font-src 'self' data:",
+      "connect-src 'self'",
+    ].join('; ')
+    return html.replace(
+      '<head>',
+      `<head>\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
+    )
+  },
+})
+
 // https://vite.dev/config/
 export default defineConfig({
   // React Compiler 在 @vitejs/plugin-react v6 需通过 reactCompilerPreset() 配合
   // @rolldown/plugin-babel 启用（该 peer 未安装），当前 deferred，见 control_doc
   plugins: [
+    cspInjectPlugin(),
     react(),
     tailwindcss(),
     viteCompression(), // gzip

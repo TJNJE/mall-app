@@ -47,6 +47,12 @@ jobs:
       - name: Size limit
         run: npm run size
 
+      # 依赖安全审计（SCA）：npm 源为 npmmirror 时 audit 不可用，需指定官方源
+      # 初始为非阻断（存量漏洞未知），观测后决定是否转阻断（S4）
+      - name: Dependency audit
+        run: npm audit --omit=dev --registry=https://registry.npmjs.org
+        continue-on-error: true
+
 # 预览部署示例（需先在仓库 secrets 配置平台凭据，当前不启用）
 #      - name: Deploy preview
 #        uses: amondnet/vercel-action@v25
