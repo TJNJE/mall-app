@@ -65,14 +65,14 @@
 
 ### Phase 3 Slice 跟踪（逐 slice gate，commit 见本表）
 
-| Slice | 内容                           | 状态      | commit |
-| ----- | ------------------------------ | --------- | ------ |
-| S1    | 架构边界（dependency-cruiser） | committed | —      |
-| S2    | 提交规范（commitlint）         | pending   | —      |
-| S3    | API 契约（OpenAPI+类型生成）   | pending   | —      |
-| S4    | 安全（ADR+CSP+audit）          | pending   | —      |
-| S5    | 设计系统（SB+暗黑+a11y）       | pending   | —      |
-| S6    | 文档治理（CLAUDE.md 重写+ADR） | pending   | —      |
+| Slice | 内容                           | 状态      | commit  |
+| ----- | ------------------------------ | --------- | ------- |
+| S1    | 架构边界（dependency-cruiser） | committed | 50f08fb |
+| S2    | 提交规范（commitlint）         | committed | —       |
+| S3    | API 契约（OpenAPI+类型生成）   | pending   | —       |
+| S4    | 安全（ADR+CSP+audit）          | pending   | —       |
+| S5    | 设计系统（SB+暗黑+a11y）       | pending   | —       |
+| S6    | 文档治理（CLAUDE.md 重写+ADR） | pending   | —       |
 
 > Phase 3 goal confirmation：用户确认全范围 6 slice 逐 slice 推进（与 Phase 2 同模式）。
 > plan review 裁决：6 项 findings 全部 accepted，作为修订增补写入 plan 后 re-review 通过。
