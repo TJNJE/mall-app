@@ -26,7 +26,7 @@
 - **scope boundary**：仅 P0 三项；不碰构建/CI/可观测/权限
 - **status**：completed — C/A/B 已提交（6f142e7 / 9cef952 / 1833c2f）
 
-### Phase 2 (P1) — 可交付 [current]
+### Phase 2 (P1) — 可交付 [completed]
 
 - 性能（memo / 预取 / React Compiler）、构建分包与压缩、CI/CD 流水线、可观测（Sentry / Performance / 埋点）、权限（RBAC + 404 + 路由级 ErrorBoundary）
 - plan: `docs/gateflow/eng-gaps-phase2-plan.md`
@@ -63,12 +63,16 @@
 
 ## 当前状态
 
-- **current phase**：Phase 2 (P1)
-- **current gate**：draft PR（分支已 push 至 origin，待在 GitHub 网页端创建——gh CLI 未安装）
-- **next entry point**：final closeout（PR 创建后更新本表并收尾）
+- **current phase**：无（Phase 2 completed；Phase 3 [pending] 待用户启动）
+- **current gate**：final closeout
+- **next entry point**：Phase 3 (P2) 可治理 — goal confirmation（用户启动时）
 
-> 分支已推送：`feat/eng-gaps-implement` → `origin`（Phase 2 全部 8 个 commit，最新 `dc9a58e`）
-> draft PR 创建链接：https://github.com/TJNJE/mall-app/pull/new/feat/eng-gaps-implement
+> **draft PR**：用户决定不等待网页创建，Phase 2 至此收尾。分支 `feat/eng-gaps-implement` 已在远端，
+> PR 可随时通过 https://github.com/TJNJE/mall-app/pull/new/feat/eng-gaps-implement 创建（标题/描述见分支描述或 aggregate review）
+>
+> **Phase 2 完成总结**：5 个 slice（S1 性能 / S2 构建 / S3 CI / S4 可观测 / S5 权限）全部 committed + reviewed，
+> 每 slice 验证 build/lint/test 全绿；aggregate deepreview pass-with-risks；
+> deferred 项（React Compiler / brotli / SourceMap / RBAC 接入）与最大 residual（新行为缺自动化测试）已完整记录。
 
 > Phase 2 aggregate deepreview: `docs/reviews/code-review-20260909-160257.md`
 > 跨 slice 耦合点（ProductListPage 双改、manualChunks vs Sentry、双层 ErrorBoundary、login 签名兼容、CI 步骤依赖、体积预算）全部验证通过；2 个低 severity findings（mockServiceWorker 进生产产物、request.ts 双重断言）deferred；测试缺口为最大 residual risk。
