@@ -57,7 +57,7 @@
 > S4 code review: `docs/reviews/code-review-20260909-151000.md`
 > F1 ErrorBoundary 渲染错误上报（已 fix，补 `componentDidCatch`）；F2 白屏检测（已 fix）；F3 CLS 仅生命周期末上报一次（已 fix）；F4 logger 随 F1 获得调用点（已 fix）；F5 SourceMap 上传 deferred（需 Sentry token，归 Phase 3）。
 
-### Phase 3 (P2) — 可治理 [current]
+### Phase 3 (P2) — 可治理 [completed]
 
 - 架构边界管控（dependency-cruiser）、设计系统（Storybook / 暗黑模式）、API 契约、安全体系、文档治理（CLAUDE.md / ADR）、提交规范（commitlint）
 - plan: `docs/gateflow/eng-gaps-phase3-plan.md`（含 plan review 修订增补 F1-F6）
@@ -72,16 +72,20 @@
 | S3    | API 契约（OpenAPI+类型生成）   | committed | ed0f007 |
 | S4    | 安全（ADR+CSP+audit）          | committed | 68ab713 |
 | S5    | 设计系统（SB+暗黑+a11y）       | committed | 36da952 |
-| S6    | 文档治理（CLAUDE.md 重写+ADR） | committed | —       |
+| S6    | 文档治理（CLAUDE.md 重写+ADR） | committed | 81679a3 |
 
 > Phase 3 goal confirmation：用户确认全范围 6 slice 逐 slice 推进（与 Phase 2 同模式）。
 > plan review 裁决：6 项 findings 全部 accepted，作为修订增补写入 plan 后 re-review 通过。
 
 ## 当前状态
 
-- **current phase**：Phase 3 (P2)
-- **current gate**：plan review（re-review 通过）
-- **next entry point**：accepted plan commit → implementation — Slice S1 架构边界（顺序 S1→S2→S3→S4→S5→S6）
+- **current phase**：无（Phase 3 completed；无后续 phase 规划）
+- **current gate**：final closeout
+- **next entry point**：全部工程化 phase 已完成；draft PR 创建链接 https://github.com/TJNJE/mall-app/pull/new/feat/eng-gaps-implement
+
+> **Phase 3 完成总结**：6 个 slice（S1 架构边界 / S2 提交规范 / S3 API 契约 / S4 安全 / S5 设计系统 / S6 文档治理）全部 committed + reviewed，
+> 每 slice 验证 lint/build/test 全绿；aggregate deepreview pass-with-risks（docs/reviews/aggregate-review-20260909-190747.md）。
+> deferred 项与遗留文件清理命令已汇总于 aggregate artifact。
 
 > **draft PR**：用户决定不等待网页创建，Phase 2 至此收尾。分支 `feat/eng-gaps-implement` 已在远端，
 > PR 可随时通过 https://github.com/TJNJE/mall-app/pull/new/feat/eng-gaps-implement 创建（标题/描述见分支描述或 aggregate review）
