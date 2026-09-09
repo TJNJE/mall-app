@@ -37,7 +37,11 @@ export default function Header() {
           {isAuthenticated ? (
             <span className="text-sm text-gray-700 flex items-center gap-2">
               {user?.username}{' '}
-              <button type="button" onClick={handleClickLogout} className="border-0 bg-transparent text-red-500 cursor-pointer text-xs px-2 py-1">
+              <button
+                type="button"
+                onClick={handleClickLogout}
+                className="border-0 bg-transparent text-red-500 cursor-pointer text-xs px-2 py-1"
+              >
                 退出
               </button>
             </span>

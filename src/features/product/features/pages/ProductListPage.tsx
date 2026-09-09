@@ -4,7 +4,11 @@ import { useProductList } from '../hooks/useProductList'
 import { Skeleton } from '@/common/components/Skeleton'
 
 // 商品卡片
-function ProductCard({ product }: { product: { id: number; name: string; price: number; image: string; tags?: string[] } }) {
+function ProductCard({
+  product,
+}: {
+  product: { id: number; name: string; price: number; image: string; tags?: string[] }
+}) {
   const navigate = useNavigate()
 
   return (
@@ -12,13 +16,20 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
       className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-transform duration-200 hover:shadow-md"
       onClick={() => navigate(`/product/${product.id}`)}
     >
-      <img src={product.image} alt={product.name} loading="lazy" className="w-full h-60 object-cover" />
+      <img
+        src={product.image}
+        alt={product.name}
+        loading="lazy"
+        className="w-full h-60 object-cover"
+      />
       <div className="p-3">
         <h3 className="text-sm font-medium text-gray-700 truncate">{product.name}</h3>
         <div className="flex items-baseline justify-between">
           <span className="text-lg font-bold text-red-600">¥{product.price}</span>
           {product.tags && product.tags.length > 0 && (
-            <span className="text-xs px-1.5 py-0.5 bg-red-50 text-red-500 rounded border border-red-200">{product.tags[0]}</span>
+            <span className="text-xs px-1.5 py-0.5 bg-red-50 text-red-500 rounded border border-red-200">
+              {product.tags[0]}
+            </span>
           )}
         </div>
       </div>
@@ -30,7 +41,12 @@ function ProductCard({ product }: { product: { id: number; name: string; price: 
 function SkeletonCard() {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <Skeleton width="100%" height={240} borderRadius={0} style={{ borderBottom: '1px solid #f0f0f0' }} />
+      <Skeleton
+        width="100%"
+        height={240}
+        borderRadius={0}
+        style={{ borderBottom: '1px solid #f0f0f0' }}
+      />
       <div className="p-3">
         <Skeleton width="80%" height={14} style={{ marginBottom: 8 }} />
         <div className="flex items-baseline justify-between">
@@ -130,7 +146,10 @@ export default function ProductListPage() {
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           className="flex-1 px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none"
         />
-        <button className="px-6 py-2.5 text-sm bg-primary text-white border-0 rounded-lg cursor-pointer" onClick={handleSearch}>
+        <button
+          className="px-6 py-2.5 text-sm bg-primary text-white border-0 rounded-lg cursor-pointer"
+          onClick={handleSearch}
+        >
           搜索
         </button>
       </div>
@@ -147,12 +166,7 @@ export default function ProductListPage() {
       )}
 
       {/* 分页 */}
-      <Pagination
-        page={page}
-        pageSize={8}
-        total={total}
-        onPageChange={(p) => setPage(p)}
-      />
+      <Pagination page={page} pageSize={8} total={total} onPageChange={(p) => setPage(p)} />
     </div>
   )
 }

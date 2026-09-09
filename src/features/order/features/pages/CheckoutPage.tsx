@@ -60,7 +60,13 @@ export default function CheckoutPage() {
   })
 
   // 构建显示的商品列表
-  let items: Array<{ productId: number; name: string; price: number; image: string; quantity: number }> = []
+  let items: Array<{
+    productId: number
+    name: string
+    price: number
+    image: string
+    quantity: number
+  }> = []
   let allLoaded = false
 
   if (fromCart && productsMap) {
@@ -77,13 +83,15 @@ export default function CheckoutPage() {
     allLoaded = true
   } else if (!fromCart && singleProduct) {
     const quantity = Number(searchParams.get('quantity')) || 1
-    items = [{
-      productId: singleProduct.id,
-      name: singleProduct.name,
-      price: singleProduct.price,
-      image: singleProduct.image,
-      quantity,
-    }]
+    items = [
+      {
+        productId: singleProduct.id,
+        name: singleProduct.name,
+        price: singleProduct.price,
+        image: singleProduct.image,
+        quantity,
+      },
+    ]
     allLoaded = true
   }
 
@@ -109,7 +117,7 @@ export default function CheckoutPage() {
   })
 
   const onSubmit = (values: CheckoutForm) => {
-    const orderItems = items.map(item => ({
+    const orderItems = items.map((item) => ({
       productId: item.productId,
       quantity: item.quantity,
     }))
@@ -157,7 +165,9 @@ export default function CheckoutPage() {
 
       {/* 收货信息 */}
       <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">收货信息</h2>
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">
+          收货信息
+        </h2>
         <div className="grid grid-cols-2 gap-4">
           <Input
             label="姓名"
@@ -200,7 +210,9 @@ export default function CheckoutPage() {
 
       {/* 商品列表 */}
       <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">商品信息</h2>
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">
+          商品信息
+        </h2>
         <div className="flex flex-col gap-4">
           {items.map((item) => (
             <div key={item.productId} className="flex items-center gap-4">

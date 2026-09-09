@@ -18,6 +18,7 @@ npm run preview    # 本地预览生产构建
 ## 架构
 
 ### 技术栈
+
 - **React 19** + TypeScript 6 + Vite 8
 - **react-router-dom v7** — 基于布局路由的路由方案
 - **@tanstack/react-query v5** — 所有数据请求（useQuery 读操作，useMutation 写操作）
@@ -73,11 +74,11 @@ src/
 
 ### 路由
 
-| 路由 | 组件 |
-|------|------|
-| `/` | ProductListPage |
-| `/product/:id` | ProductDetailPage |
-| `/checkout` | CheckoutPage |
-| `/order/success` | OrderSuccessPage |
-| `/orders` | OrderListPage |
-| `/order/:id` | OrderDetailPage |
+| 路由             | 组件              |
+| ---------------- | ----------------- |
+| `/`              | ProductListPage   |
+| `/product/:id`   | ProductDetailPage |
+| `/checkout`      | CheckoutPage      |
+| `/order/success` | OrderSuccessPage  |
+| `/orders`        | OrderListPage     |
+| `/order/:id`     | OrderDetailPage   |

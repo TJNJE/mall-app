@@ -12,19 +12,32 @@ const STATUS_MAP: Record<string, { label: string; color: string }> = {
   cancelled: { label: '已取消', color: '#999' },
 }
 
-function OrderCard({ order }: { order: { id: string; totalAmount: number; status: string; createdAt: string } }) {
+function OrderCard({
+  order,
+}: {
+  order: { id: string; totalAmount: number; status: string; createdAt: string }
+}) {
   const navigate = useNavigate()
   const statusInfo = STATUS_MAP[order.status] || { label: order.status, color: '#999' }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-shadow duration-200 hover:shadow-md" onClick={() => navigate(`/order/${order.id}`)}>
+    <div
+      className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-shadow duration-200 hover:shadow-md"
+      onClick={() => navigate(`/order/${order.id}`)}
+    >
       <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
         <span className="text-xs text-gray-400">订单号：{order.id}</span>
-        <span className={`text-xs font-medium ${order.status === 'pending' ? 'text-yellow-500' : order.status === 'paid' ? 'text-blue-500' : order.status === 'shipped' ? 'text-purple-600' : order.status === 'completed' ? 'text-green-500' : 'text-gray-400'}`}>{statusInfo.label}</span>
+        <span
+          className={`text-xs font-medium ${order.status === 'pending' ? 'text-yellow-500' : order.status === 'paid' ? 'text-blue-500' : order.status === 'shipped' ? 'text-purple-600' : order.status === 'completed' ? 'text-green-500' : 'text-gray-400'}`}
+        >
+          {statusInfo.label}
+        </span>
       </div>
       <div className="flex justify-between items-center">
         <span className="text-lg font-semibold text-gray-800">¥{order.totalAmount.toFixed(2)}</span>
-        <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleString('zh-CN')}</span>
+        <span className="text-xs text-gray-400">
+          {new Date(order.createdAt).toLocaleString('zh-CN')}
+        </span>
       </div>
     </div>
   )
@@ -60,9 +73,11 @@ export default function OrderListPage() {
       ) : (
         <>
           <div className="flex flex-col gap-3">
-            {orders.map((order: { id: string; totalAmount: number; status: string; createdAt: string }) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
+            {orders.map(
+              (order: { id: string; totalAmount: number; status: string; createdAt: string }) => (
+                <OrderCard key={order.id} order={order} />
+              ),
+            )}
           </div>
 
           {total > 10 && (

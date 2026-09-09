@@ -42,7 +42,10 @@ export default function ProductDetailPage() {
     return (
       <div className="text-center py-16 text-gray-400">
         <p>商品不存在或加载失败</p>
-        <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm" onClick={() => navigate('/')}>
+        <button
+          className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm"
+          onClick={() => navigate('/')}
+        >
           返回列表
         </button>
       </div>
@@ -51,22 +54,38 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5" type="button" onClick={() => navigate('/')}>
+      <button
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
+        type="button"
+        onClick={() => navigate('/')}
+      >
         ← 返回
       </button>
 
       <div className="flex gap-10 bg-white p-8 rounded-lg border border-gray-200">
         <div className="w-[480px] flex-shrink-0">
-          <img src={product.image} alt={product.name} loading="lazy" className="w-full h-[480px] object-cover rounded-lg" />
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-[480px] object-cover rounded-lg"
+          />
         </div>
 
         <div className="flex-1">
-          <h1 className="text-xl font-semibold text-gray-800 mb-4 leading-relaxed">{product.name}</h1>
+          <h1 className="text-xl font-semibold text-gray-800 mb-4 leading-relaxed">
+            {product.name}
+          </h1>
 
           {product.tags && product.tags.length > 0 && (
             <div className="flex gap-2 mb-5">
               {product.tags.map((tag) => (
-                <span key={tag} className="text-sm px-2 py-0.5 bg-red-50 text-red-500 rounded border border-red-200">{tag}</span>
+                <span
+                  key={tag}
+                  className="text-sm px-2 py-0.5 bg-red-50 text-red-500 rounded border border-red-200"
+                >
+                  {tag}
+                </span>
               ))}
             </div>
           )}
@@ -74,7 +93,9 @@ export default function ProductDetailPage() {
           <div className="flex items-baseline gap-3 mb-7 pb-5 border-b border-gray-100">
             <span className="text-3xl font-bold text-red-600">¥{product.price}</span>
             <span className="text-sm text-gray-500 line-through">¥{product.originalPrice}</span>
-            <span className="text-xs text-white bg-red-500 px-2 py-0.5 rounded">省 ¥{product.originalPrice - product.price}</span>
+            <span className="text-xs text-white bg-red-500 px-2 py-0.5 rounded">
+              省 ¥{product.originalPrice - product.price}
+            </span>
           </div>
 
           <div className="flex mb-3.5 text-sm">
@@ -92,8 +113,8 @@ export default function ProductDetailPage() {
           <div className="flex mb-3.5 text-sm">
             <span className="w-20 text-gray-500 flex-shrink-0">评分</span>
             <span className="text-gray-800">
-              {'★'.repeat(Math.floor(product.rating))}{'☆'.repeat(5 - Math.floor(product.rating))}
-              {' '}{product.rating}
+              {'★'.repeat(Math.floor(product.rating))}
+              {'☆'.repeat(5 - Math.floor(product.rating))} {product.rating}
             </span>
           </div>
 

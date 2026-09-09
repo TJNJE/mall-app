@@ -35,7 +35,10 @@ export function RouterProvider() {
           <Route element={<App />}>
             <Route path="/" element={<PageWrapper Component={ProductListPage} name="商品列表" />} />
             <Route path="/cart" element={<PageWrapper Component={CartPage} name="购物车" />} />
-            <Route path="/product/:id" element={<PageWrapper Component={ProductDetailPage} name="商品详情" />} />
+            <Route
+              path="/product/:id"
+              element={<PageWrapper Component={ProductDetailPage} name="商品详情" />}
+            />
             <Route path="/login" element={<LoginPage />} />
             <Route
               path="/checkout"

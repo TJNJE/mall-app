@@ -7,7 +7,8 @@ const products: Product[] = [
     price: 9999,
     originalPrice: 11999,
     image: 'https://picsum.photos/400/400?random=1',
-    description: 'Apple A18 Pro 芯片，6.9 英寸超视网膜 XDR 显示屏，钛金属设计，4800 万像素摄像头系统。',
+    description:
+      'Apple A18 Pro 芯片，6.9 英寸超视网膜 XDR 显示屏，钛金属设计，4800 万像素摄像头系统。',
     category: '手机',
     stock: 100,
     rating: 4.9,

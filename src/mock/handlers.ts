@@ -108,7 +108,10 @@ export function mockCheckout(
 }
 
 /** 获取订单列表 */
-export function mockGetOrders(page: number = 1, pageSize: number = 10): { list: MockOrder[]; total: number } {
+export function mockGetOrders(
+  page: number = 1,
+  pageSize: number = 10,
+): { list: MockOrder[]; total: number } {
   const start = (page - 1) * pageSize
   const list = orders.slice(start, start + pageSize)
   return { list, total: orders.length }

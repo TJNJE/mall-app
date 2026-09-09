@@ -1,6 +1,12 @@
 import { setupWorker } from 'msw/browser'
 import { http, delay } from 'msw'
-import { mockGetProducts, mockGetProduct, mockCheckout, mockGetOrders, mockGetOrder } from './handlers'
+import {
+  mockGetProducts,
+  mockGetProduct,
+  mockCheckout,
+  mockGetOrders,
+  mockGetOrder,
+} from './handlers'
 
 // 模拟网络延迟
 async function json<T>(data: T, status = 200): Promise<Response> {
@@ -50,7 +56,10 @@ export const worker = setupWorker(
   http.post('/api/orders', async ({ request }) => {
     maybeFail()
     const body = await request.json()
-    const { items, address } = body as { items: Array<{ productId: number; quantity: number }>; address: Record<string, string> }
+    const { items, address } = body as {
+      items: Array<{ productId: number; quantity: number }>
+      address: Record<string, string>
+    }
     const productIds = items.map((item) => item.productId)
     const quantities = items.map((item) => item.quantity)
     const result = mockCheckout(productIds, quantities, address)

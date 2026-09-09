@@ -30,7 +30,7 @@ export function Button({
           'px-4 py-2 text-base': size === 'md',
           'px-6 py-3 text-lg': size === 'lg',
         },
-        className
+        className,
       )}
       disabled={disabled}
       {...props}

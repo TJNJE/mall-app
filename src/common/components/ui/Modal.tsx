@@ -13,7 +13,9 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
 
   useEffect(() => {
     if (!open) return
-    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
   }, [open, onClose])
@@ -24,12 +26,20 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
     <div
       ref={overlayRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
+      onClick={(e) => {
+        if (e.target === overlayRef.current) onClose()
+      }}
     >
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none" type="button">&times;</button>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+            type="button"
+          >
+            &times;
+          </button>
         </div>
         <div className="px-6 py-4">{children}</div>
         {footer && <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">{footer}</div>}

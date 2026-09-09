@@ -15,7 +15,7 @@ export function Input({ error, label, className, ...props }: InputProps) {
         className={cn(
           'px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors',
           error && 'border-red-500',
-          className
+          className,
         )}
         {...props}
       />

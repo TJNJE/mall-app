@@ -25,7 +25,10 @@ export default function LoginPage() {
           onChange={(e) => setUsername(e.target.value)}
           autoFocus
         />
-        <button className="px-0 py-3 text-lg font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer" type="submit">
+        <button
+          className="px-0 py-3 text-lg font-semibold bg-primary text-white border-0 rounded-lg cursor-pointer"
+          type="submit"
+        >
           登录
         </button>
       </form>

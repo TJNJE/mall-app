@@ -17,7 +17,9 @@ export function login(username: string) {
 // ========== 商品相关 ==========
 
 export function getProductList(params: { page?: number; pageSize?: number; keyword?: string }) {
-  return request.get<ProductListResponse>('/api/products', { params }) as unknown as Promise<ProductListResponse>
+  return request.get<ProductListResponse>('/api/products', {
+    params,
+  }) as unknown as Promise<ProductListResponse>
 }
 
 export function getProductDetail(id: number) {
@@ -31,7 +33,9 @@ export function createOrder(data: CheckoutRequest) {
 }
 
 export function getOrderList(params: { page?: number; pageSize?: number }) {
-  return request.get<OrderListResponse>('/api/orders', { params }) as unknown as Promise<OrderListResponse>
+  return request.get<OrderListResponse>('/api/orders', {
+    params,
+  }) as unknown as Promise<OrderListResponse>
 }
 
 export function getOrderDetail(id: string) {

@@ -15,7 +15,7 @@ export function Textarea({ error, label, className, ...props }: TextareaProps) {
         className={cn(
           'px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y min-h-[80px] font-inherit',
           error && 'border-red-500',
-          className
+          className,
         )}
         {...props}
       />

@@ -34,7 +34,10 @@ export default function OrderDetailPage() {
     return (
       <div className="text-center py-16 text-gray-400">
         <p>订单不存在</p>
-        <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5" onClick={() => navigate('/orders')}>
+        <button
+          className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
+          onClick={() => navigate('/orders')}
+        >
           返回订单列表
         </button>
       </div>
@@ -45,7 +48,10 @@ export default function OrderDetailPage() {
 
   return (
     <div className="max-w-[800px] mx-auto">
-      <button className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5" onClick={() => navigate('/orders')}>
+      <button
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg cursor-pointer text-sm mb-5"
+        onClick={() => navigate('/orders')}
+      >
         ← 返回
       </button>
 
@@ -53,7 +59,9 @@ export default function OrderDetailPage() {
 
       {/* 订单状态 */}
       <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">订单状态</h2>
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">
+          订单状态
+        </h2>
         <div className="flex items-center gap-2 mb-4">
           <span className="w-2.5 h-2.5 rounded-full" style={{ background: statusInfo.color }} />
           <span className="text-base font-medium text-gray-800">{statusInfo.label}</span>
@@ -65,14 +73,18 @@ export default function OrderDetailPage() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">创建时间</span>
-            <span className="text-gray-800">{new Date(order.createdAt).toLocaleString('zh-CN')}</span>
+            <span className="text-gray-800">
+              {new Date(order.createdAt).toLocaleString('zh-CN')}
+            </span>
           </div>
         </div>
       </div>
 
       {/* 收货信息 */}
       <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">收货信息</h2>
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">
+          收货信息
+        </h2>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">收货人</span>
@@ -85,7 +97,8 @@ export default function OrderDetailPage() {
           <div className="flex justify-between text-sm col-span-2">
             <span className="text-gray-400">详细地址</span>
             <span className="text-gray-800">
-              {order.address.province} {order.address.city} {order.address.district} {order.address.detail}
+              {order.address.province} {order.address.city} {order.address.district}{' '}
+              {order.address.detail}
             </span>
           </div>
         </div>
@@ -93,14 +106,23 @@ export default function OrderDetailPage() {
 
       {/* 商品信息 */}
       <div className="bg-white p-5 rounded-lg border border-gray-200 mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">商品信息</h2>
+        <h2 className="text-sm font-semibold text-gray-800 mb-4 pb-3 border-b border-gray-100">
+          商品信息
+        </h2>
         {order.items.map((item, i) => (
           <div key={i} className="flex gap-3 p-3 bg-gray-50 rounded-lg mb-2">
-            <img src={item.productImage} alt={item.productName} className="w-14 h-14 object-cover rounded" />
+            <img
+              src={item.productImage}
+              alt={item.productName}
+              className="w-14 h-14 object-cover rounded"
+            />
             <div className="flex-1 flex items-center gap-3">
               <h3 className="text-sm font-medium text-gray-800 flex-1">{item.productName}</h3>
               <span className="text-sm text-red-600 font-semibold">¥{item.price}</span>
-              <span className="text-sm" style={{ fontSize: 13, color: '#999' }}>{`x${item.quantity}`}</span>
+              <span
+                className="text-sm"
+                style={{ fontSize: 13, color: '#999' }}
+              >{`x${item.quantity}`}</span>
             </div>
           </div>
         ))}
