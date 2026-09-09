@@ -37,8 +37,8 @@
 | Slice | 内容                              | 状态                                 | commit  |
 | ----- | --------------------------------- | ------------------------------------ | ------- |
 | S1    | 性能（memo/预取/React Compiler）  | committed（React Compiler deferred） | 375fd9a |
-| S2    | 构建分包与压缩                    | committed（brotli deferred）         | —       |
-| S3    | CI/CD 流水线                      | pending                              | —       |
+| S2    | 构建分包与压缩                    | committed（brotli deferred）         | bd7e21c |
+| S3    | CI/CD 流水线                      | committed                            | —       |
 | S4    | 可观测（Sentry/Performance/埋点） | pending                              | —       |
 | S5    | 权限（RBAC/404/ErrorBoundary）    | pending                              | —       |
 
@@ -47,6 +47,9 @@
 >
 > S2 code review: `docs/reviews/code-review-20260909-145408.md`
 > F1 brotli 未产出任何 `.br`（deferred，当前仅 gzip）；F2 visualizer 改为 `ANALYZE=1` 按需启用（已 fix）；F3 体积预算由 500 kB 收紧至 200 kB（已 fix）。
+>
+> S3 code review: `docs/reviews/code-review-20260909-150042.md`
+> F1 加 `permissions: contents: read`（已 fix）；F2 加 `concurrency` 取消过期运行（已 fix）。CI 远端实际运行结果待 PR 触发确认。
 
 ### Phase 3 (P2) — 可治理 [pending]
 
