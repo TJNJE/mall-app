@@ -1,4 +1,5 @@
 import React from 'react'
+import { logger } from '@/lib/logger'
 
 interface Props {
   children: React.ReactNode
@@ -17,6 +18,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo): void {
+    // 渲染错误上报（S4 可观测）：未配置 Sentry 时退化为 console。
+    // ErrorBoundary 吞掉的错误不会自动进入 Sentry，必须显式上报（S4 review F1）
+    logger.error(`[ErrorBoundary] ${error.message}`, info.componentStack)
   }
 
   render() {

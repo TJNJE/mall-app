@@ -38,8 +38,8 @@
 | ----- | --------------------------------- | ------------------------------------ | ------- |
 | S1    | 性能（memo/预取/React Compiler）  | committed（React Compiler deferred） | 375fd9a |
 | S2    | 构建分包与压缩                    | committed（brotli deferred）         | bd7e21c |
-| S3    | CI/CD 流水线                      | committed                            | —       |
-| S4    | 可观测（Sentry/Performance/埋点） | pending                              | —       |
+| S3    | CI/CD 流水线                      | committed                            | 8871089 |
+| S4    | 可观测（Sentry/Performance/埋点） | committed                            | —       |
 | S5    | 权限（RBAC/404/ErrorBoundary）    | pending                              | —       |
 
 > S1 code review: `docs/reviews/code-review-20260909-143211.md`
@@ -50,6 +50,9 @@
 >
 > S3 code review: `docs/reviews/code-review-20260909-150042.md`
 > F1 加 `permissions: contents: read`（已 fix）；F2 加 `concurrency` 取消过期运行（已 fix）。CI 远端实际运行结果待 PR 触发确认。
+>
+> S4 code review: `docs/reviews/code-review-20260909-151000.md`
+> F1 ErrorBoundary 渲染错误上报（已 fix，补 `componentDidCatch`）；F2 白屏检测（已 fix）；F3 CLS 仅生命周期末上报一次（已 fix）；F4 logger 随 F1 获得调用点（已 fix）；F5 SourceMap 上传 deferred（需 Sentry token，归 Phase 3）。
 
 ### Phase 3 (P2) — 可治理 [pending]
 

@@ -37,6 +37,8 @@ export default defineConfig({
           if (id.includes('@tanstack/react-query')) return 'react-query'
           if (id.includes('react-router') || id.includes('@remix-run')) return 'router'
           if (id.includes('zustand')) return 'state'
+          // @sentry/react 会命中下面的 '/react/' 规则，需前置单独分组
+          if (id.includes('@sentry')) return 'monitoring'
           if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('scheduler'))
             return 'react'
           return 'vendor'

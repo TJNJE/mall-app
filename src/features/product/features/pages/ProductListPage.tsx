@@ -1,9 +1,10 @@
-import { useState, useCallback, memo } from 'react'
+import { useState, useCallback, memo, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useProductList } from '../hooks/useProductList'
 import { productDetailQueryKey } from '../hooks/useProductDetail'
 import { getProductDetail } from '@/api'
+import { track } from '@/lib/track'
 import { Skeleton } from '@/common/components/Skeleton'
 
 // 商品卡片（memo 化，避免父组件重渲染时整列表重渲染）
@@ -15,9 +16,27 @@ const ProductCard = memo(function ProductCard({
   onOpen: (id: number) => void
 }) {
   const queryClient = useQueryClient()
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  // 商品曝光埋点：首次进入视口上报一次后断开观察（S4 可观测）
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          track('product_exposure', { id: product.id })
+          observer.disconnect()
+        }
+      }
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [product.id])
 
   return (
     <div
+      ref={cardRef}
       className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-transform duration-200 hover:shadow-md"
       onClick={() => onOpen(product.id)}
       onMouseEnter={() => {
