@@ -68,8 +68,8 @@
 | Slice | 内容                           | 状态      | commit  |
 | ----- | ------------------------------ | --------- | ------- |
 | S1    | 架构边界（dependency-cruiser） | committed | 50f08fb |
-| S2    | 提交规范（commitlint）         | committed | —       |
-| S3    | API 契约（OpenAPI+类型生成）   | pending   | —       |
+| S2    | 提交规范（commitlint）         | committed | c2f3580 |
+| S3    | API 契约（OpenAPI+类型生成）   | committed | —       |
 | S4    | 安全（ADR+CSP+audit）          | pending   | —       |
 | S5    | 设计系统（SB+暗黑+a11y）       | pending   | —       |
 | S6    | 文档治理（CLAUDE.md 重写+ADR） | pending   | —       |
