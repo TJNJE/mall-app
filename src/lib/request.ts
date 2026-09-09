@@ -40,7 +40,9 @@ instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     const body = response.data as ApiResponse<unknown>
-    if (body.code === 0) return body.data
+    // 解包：拦截器返回 data 本身（UnwrappedAxios 契约），
+    // 但 axios 类型要求 onFulfilled 返回 AxiosResponse，此处仅在类型层断言，运行时语义不变
+    if (body.code === 0) return body.data as AxiosResponse
     return Promise.reject(new Error(body.message || '请求失败'))
   },
   (error: AxiosError<ApiError>) => {

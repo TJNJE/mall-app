@@ -1,21 +1,30 @@
-import { useState } from 'react'
+import { useState, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useProductList } from '../hooks/useProductList'
+import { productDetailQueryKey } from '../hooks/useProductDetail'
+import { getProductDetail } from '@/api'
 import { Skeleton } from '@/common/components/Skeleton'
 
-// 商品卡片
-function ProductCard({
+// 商品卡片（memo 化，避免父组件重渲染时整列表重渲染）
+const ProductCard = memo(function ProductCard({
   product,
+  onOpen,
 }: {
   product: { id: number; name: string; price: number; image: string; tags?: string[] }
+  onOpen: (id: number) => void
 }) {
-  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   return (
     <div
       className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-transform duration-200 hover:shadow-md"
-      onClick={() => {
-        void navigate(`/product/${product.id}`)
+      onClick={() => onOpen(product.id)}
+      onMouseEnter={() => {
+        void queryClient.prefetchQuery({
+          queryKey: productDetailQueryKey(product.id),
+          queryFn: () => getProductDetail(product.id),
+        })
       }}
     >
       <img
@@ -37,7 +46,7 @@ function ProductCard({
       </div>
     </div>
   )
-}
+})
 
 // 骨架屏卡片
 function SkeletonCard() {
@@ -114,6 +123,14 @@ export default function ProductListPage() {
   const products = data?.list ?? []
   const total = data?.total ?? 0
 
+  const navigate = useNavigate()
+  const onOpen = useCallback(
+    (id: number) => {
+      void navigate(`/product/${id}`)
+    },
+    [navigate],
+  )
+
   const [searchInput, setSearchInput] = useState('')
   const handleSearch = () => {
     setKeyword(searchInput)
@@ -162,7 +179,7 @@ export default function ProductListPage() {
       ) : (
         <div className="grid grid-cols-4 gap-4">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onOpen={onOpen} />
           ))}
         </div>
       )}

@@ -4,6 +4,8 @@ import type { Product } from '@/types'
 
 const PRODUCT_DETAIL_KEY = ['product']
 
+export const productDetailQueryKey = (id: number) => [...PRODUCT_DETAIL_KEY, id] as const
+
 // 获取单个商品详情，queryKey 带上 productId 做缓存隔离
 // productId 变了 → 自动发新请求
 export function useProductDetail(id: number) {

@@ -34,13 +34,16 @@
 
 ### Phase 2 Slice 跟踪（逐 slice gate，commit 见本表）
 
-| Slice | 内容                              | 状态    | commit |
-| ----- | --------------------------------- | ------- | ------ |
-| S1    | 性能（memo/预取/React Compiler）  | pending | —      |
-| S2    | 构建分包与压缩                    | pending | —      |
-| S3    | CI/CD 流水线                      | pending | —      |
-| S4    | 可观测（Sentry/Performance/埋点） | pending | —      |
-| S5    | 权限（RBAC/404/ErrorBoundary）    | pending | —      |
+| Slice | 内容                              | 状态                                 | commit |
+| ----- | --------------------------------- | ------------------------------------ | ------ |
+| S1    | 性能（memo/预取/React Compiler）  | committed（React Compiler deferred） | —      |
+| S2    | 构建分包与压缩                    | pending                              | —      |
+| S3    | CI/CD 流水线                      | pending                              | —      |
+| S4    | 可观测（Sentry/Performance/埋点） | pending                              | —      |
+| S5    | 权限（RBAC/404/ErrorBoundary）    | pending                              | —      |
+
+> S1 code review: `docs/reviews/code-review-20260909-143211.md`
+> F1 React Compiler deferred（`@vitejs/plugin-react` v6 的 `Options` 不含 `reactCompiler` / `babel`，需 `reactCompilerPreset()` + `@rolldown/plugin-babel`）；F2 预取防抖 / F3 测试覆盖 / F4 `request.ts` 断言均为 deferred-with-owner，不阻塞 accept。
 
 ### Phase 3 (P2) — 可治理 [pending]
 
