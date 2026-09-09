@@ -39,8 +39,11 @@
 | S1    | 性能（memo/预取/React Compiler）  | committed（React Compiler deferred） | 375fd9a |
 | S2    | 构建分包与压缩                    | committed（brotli deferred）         | bd7e21c |
 | S3    | CI/CD 流水线                      | committed                            | 8871089 |
-| S4    | 可观测（Sentry/Performance/埋点） | committed                            | —       |
-| S5    | 权限（RBAC/404/ErrorBoundary）    | pending                              | —       |
+| S4    | 可观测（Sentry/Performance/埋点） | committed                            | cbc090c |
+| S5    | 权限（RBAC/404/ErrorBoundary）    | committed（RBAC 未接路由，见 F1）    | —       |
+
+> S5 code review: `docs/reviews/code-review-20260909-151829.md`
+> F1 `requiredRole` 无调用点、RBAC 未实际生效（deferred，待真实角色体系）；F2 无 admin 登录路径、`/403` 不可达（deferred）；F3 `hydrate` 补 `try/catch` 防损坏数据导致白屏（已 fix）。
 
 > S1 code review: `docs/reviews/code-review-20260909-143211.md`
 > F1 React Compiler deferred（`@vitejs/plugin-react` v6 的 `Options` 不含 `reactCompiler` / `babel`，需 `reactCompilerPreset()` + `@rolldown/plugin-babel`）；F2 预取防抖 / F3 测试覆盖 / F4 `request.ts` 断言均为 deferred-with-owner，不阻塞 accept。

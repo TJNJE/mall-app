@@ -6,6 +6,9 @@ import { hydrateAuth } from './hydrateAuth'
 import AuthGuard from './AuthGuard'
 import App from '../App'
 import ImportingFallback from '@/common/components/ImportingFallback'
+import { RouteErrorBoundary } from '@/common/components/RouteErrorBoundary'
+import NotFoundPage from '@/common/pages/NotFoundPage'
+import ForbiddenPage from '@/common/pages/ForbiddenPage'
 import {
   ProductListPage,
   ProductDetailPage,
@@ -19,9 +22,12 @@ import {
 
 function PageWrapper({ Component, name }: { Component: React.ComponentType; name: string }) {
   return (
-    <Suspense fallback={<ImportingFallback name={name} />}>
-      <Component />
-    </Suspense>
+    // 路由级 ErrorBoundary：单页抛错只影响当前页，不整页白屏（S5）
+    <RouteErrorBoundary>
+      <Suspense fallback={<ImportingFallback name={name} />}>
+        <Component />
+      </Suspense>
+    </RouteErrorBoundary>
   )
 }
 
@@ -40,6 +46,7 @@ export function RouterProvider() {
               element={<PageWrapper Component={ProductDetailPage} name="商品详情" />}
             />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/403" element={<ForbiddenPage />} />
             <Route
               path="/checkout"
               element={
@@ -72,6 +79,8 @@ export function RouterProvider() {
                 </AuthGuard>
               }
             />
+            {/* 404 兜底：必须放在最后，匹配所有未定义路径（S5） */}
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
