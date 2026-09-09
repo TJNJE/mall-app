@@ -64,8 +64,11 @@
 ## 当前状态
 
 - **current phase**：Phase 2 (P1)
-- **current gate**：aggregate deepreview (pass-with-risks)
-- **next entry point**：draft PR（需用户授权 push）
+- **current gate**：draft PR（分支已 push 至 origin，待在 GitHub 网页端创建——gh CLI 未安装）
+- **next entry point**：final closeout（PR 创建后更新本表并收尾）
+
+> 分支已推送：`feat/eng-gaps-implement` → `origin`（Phase 2 全部 8 个 commit，最新 `dc9a58e`）
+> draft PR 创建链接：https://github.com/TJNJE/mall-app/pull/new/feat/eng-gaps-implement
 
 > Phase 2 aggregate deepreview: `docs/reviews/code-review-20260909-160257.md`
 > 跨 slice 耦合点（ProductListPage 双改、manualChunks vs Sentry、双层 ErrorBoundary、login 签名兼容、CI 步骤依赖、体积预算）全部验证通过；2 个低 severity findings（mockServiceWorker 进生产产物、request.ts 双重断言）deferred；测试缺口为最大 residual risk。
