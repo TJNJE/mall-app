@@ -40,7 +40,7 @@
 | S2    | 构建分包与压缩                    | committed（brotli deferred）         | bd7e21c |
 | S3    | CI/CD 流水线                      | committed                            | 8871089 |
 | S4    | 可观测（Sentry/Performance/埋点） | committed                            | cbc090c |
-| S5    | 权限（RBAC/404/ErrorBoundary）    | committed（RBAC 未接路由，见 F1）    | —       |
+| S5    | 权限（RBAC/404/ErrorBoundary）    | committed（RBAC 未接路由，见 F1）    | f20d0f9 |
 
 > S5 code review: `docs/reviews/code-review-20260909-151829.md`
 > F1 `requiredRole` 无调用点、RBAC 未实际生效（deferred，待真实角色体系）；F2 无 admin 登录路径、`/403` 不可达（deferred）；F3 `hydrate` 补 `try/catch` 防损坏数据导致白屏（已 fix）。
@@ -64,8 +64,11 @@
 ## 当前状态
 
 - **current phase**：Phase 2 (P1)
-- **current gate**：plan review (pass-with-risks)
-- **next entry point**：implementation — Slice S1 性能优化（建议顺序 S1→S2→S3→S5→S4）
+- **current gate**：aggregate deepreview (pass-with-risks)
+- **next entry point**：draft PR（需用户授权 push）
+
+> Phase 2 aggregate deepreview: `docs/reviews/code-review-20260909-160257.md`
+> 跨 slice 耦合点（ProductListPage 双改、manualChunks vs Sentry、双层 ErrorBoundary、login 签名兼容、CI 步骤依赖、体积预算）全部验证通过；2 个低 severity findings（mockServiceWorker 进生产产物、request.ts 双重断言）deferred；测试缺口为最大 residual risk。
 
 ### Phase 1 Slice 跟踪（逐 slice gate，commit 见本表）
 
