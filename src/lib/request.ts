@@ -7,7 +7,6 @@ import type {
   InternalAxiosRequestConfig,
 } from 'axios'
 import type { ApiResponse, ApiError } from '@/types'
-import { useAuthStore } from '@/features/auth/stores/authStore'
 
 // 后端统一返回 { code, message, data }，response 拦截器已将其解包为 data。
 // 这里通过类型转换将 AxiosInstance 的方法返回类型声明为「已解包的 T」，
@@ -31,8 +30,16 @@ const instance = axios.create({
   timeout: 10000,
 })
 
+// token 获取器由应用装配层注入（main.tsx），
+// 避免 lib 层反向依赖 features 层（S1 dependency-cruiser 规则 no-reverse-dep）
+let authTokenGetter: (() => string | undefined) | null = null
+
+export function setAuthTokenGetter(getter: () => string | undefined): void {
+  authTokenGetter = getter
+}
+
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = useAuthStore.getState().user?.token
+  const token = authTokenGetter?.()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })

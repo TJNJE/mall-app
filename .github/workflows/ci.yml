@@ -41,6 +41,9 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Dependency rules
+        run: npm run cruise
+
       - name: Size limit
         run: npm run size
 
