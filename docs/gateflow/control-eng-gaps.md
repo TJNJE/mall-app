@@ -13,7 +13,7 @@
 
 ## Phase 计划
 
-### Phase 1 (P0) — 质量底线 [current]
+### Phase 1 (P0) — 质量底线 [completed]
 
 - **goal**：落地三项质量底线能力
   1. 测试体系：`vitest` + `React Testing Library`，覆盖 `cartStore` / `useProductList`
@@ -24,11 +24,23 @@
   - `tsc --noEmit` 在 `strict` 下零报错
   - `git commit` 自动触发 lint + format（husky + lint-staged）
 - **scope boundary**：仅 P0 三项；不碰构建/CI/可观测/权限
-- **status**：implementation（plan review 已通过 pass-with-risks；按 C→A→B 逐 slice gate）
+- **status**：completed — C/A/B 已提交（6f142e7 / 9cef952 / 1833c2f）
 
-### Phase 2 (P1) — 可交付 [pending]
+### Phase 2 (P1) — 可交付 [current]
 
 - 性能（memo / 预取 / React Compiler）、构建分包与压缩、CI/CD 流水线、可观测（Sentry / Performance / 埋点）、权限（RBAC + 404 + 路由级 ErrorBoundary）
+- plan: `docs/gateflow/eng-gaps-phase2-plan.md`
+- plan review: `docs/reviews/plan-review-20260909-104547.md`（conclusion: pass-with-risks）
+
+### Phase 2 Slice 跟踪（逐 slice gate，commit 见本表）
+
+| Slice | 内容                              | 状态    | commit |
+| ----- | --------------------------------- | ------- | ------ |
+| S1    | 性能（memo/预取/React Compiler）  | pending | —      |
+| S2    | 构建分包与压缩                    | pending | —      |
+| S3    | CI/CD 流水线                      | pending | —      |
+| S4    | 可观测（Sentry/Performance/埋点） | pending | —      |
+| S5    | 权限（RBAC/404/ErrorBoundary）    | pending | —      |
 
 ### Phase 3 (P2) — 可治理 [pending]
 
@@ -36,9 +48,9 @@
 
 ## 当前状态
 
-- **current phase**：Phase 1 (P0)
-- **current gate**：implementation
-- **next entry point**：implementation — Slice A 测试体系
+- **current phase**：Phase 2 (P1)
+- **current gate**：plan review (pass-with-risks)
+- **next entry point**：implementation — Slice S1 性能优化（建议顺序 S1→S2→S3→S5→S4）
 
 ### Phase 1 Slice 跟踪（逐 slice gate，commit 见本表）
 
