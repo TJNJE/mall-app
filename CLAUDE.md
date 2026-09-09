@@ -1,84 +1,83 @@
 # CLAUDE.md
 
-本文件为 Claude Code (claude.ai/code) 提供本仓库的开发指导。
+本文件为本仓库的开发指导。**内容必须与代码保持同步**——每次新增工程能力或调整架构，需同步更新本文件（S6 文档治理约定）。
 
 ## 项目
 
-**mall-app** — 基于 React 19 + TypeScript 的商城单页应用，用于向有 Vue 基础的开发人员教授 React。所有数据通过 MSW 模拟。
+**mall-app** — React 19 + TypeScript（strict）商城单页应用，用于向有 Vue 基础的开发人员教授 React 生态。数据经 MSW v2 模拟（dev 环境），无真实后端。
 
 ## 常用命令
 
 ```bash
-npm run dev        # 启动 Vite 开发服务器（含 HMR + MSW Mock）
-npm run build      # TypeScript 类型检查 (tsc -b) 后构建到 dist/
-npm run lint       # 运行 ESLint
-npm run preview    # 本地预览生产构建
+npm run dev         # Vite 开发服务器（HMR + MSW Mock，dev 自动注册 service worker）
+npm run build       # tsc -b 类型检查 + vite build（产物含 gzip，CSP 注入）
+npm run lint        # eslint（type-checked，projectService 解析）
+npm run test        # vitest 单测（2 文件 6 用例）
+npm run coverage    # vitest 覆盖率（v8，text+html）
+npm run preview     # 预览生产构建
+npm run size        # size-limit 体积预算（200 kB brotli，当前约 156 kB）
+npm run cruise      # dependency-cruiser 架构边界检查（CI 同步执行）
+npm run gen:api     # 从 docs/api/openapi.yaml 生成 src/api/schema.d.ts
+npm run storybook   # Storybook dev（10.6，addon-a11y）
+npm run build-storybook
 ```
 
-## 架构
+## 架构分层与依赖方向（dependency-cruiser 强制）
 
-### 技术栈
-
-- **React 19** + TypeScript 6 + Vite 8
-- **react-router-dom v7** — 基于布局路由的路由方案
-- **@tanstack/react-query v5** — 所有数据请求（useQuery 读操作，useMutation 写操作）
-- **axios** — HTTP 客户端，带拦截器（当 `code === 0` 时自动提取 `data` 字段）
-- **msw v2** — Service Worker 拦截 API 请求（仅开发环境）
-
-### 目录结构
-
-```
-src/
-├── main.tsx                          # 入口：启动 MSW worker + 挂载 App
-├── App.tsx                           # 根布局：<Header> + <Outlet>
-├── lib/
-│   ├── router.tsx                    # BrowserRouter + 所有路由定义
-│   ├── query.tsx                     # QueryClient 单例（全局 staleTime: 5 分钟）
-│   └── request.ts                    # Axios 实例，含请求/响应拦截器
-├── api/
-│   └── index.ts                      # 类型化 API 函数（getProductList、createOrder 等）
-├── types/
-│   ├── api.ts                        # ApiResponse、ApiError、PaginationParams
-│   ├── product.ts                    # Product、ProductListResponse
-│   └── order.ts                      # Order、OrderItem、CheckoutRequest、CheckoutResponse
-├── common/components/
-│   └── Header.tsx                    # 顶部导航栏（Logo + 链接）
-├── features/
-│   ├── product/features/
-│   │   ├── hooks/                    # useProductList、useProductDetail
-│   │   └── pages/                    # ProductListPage、ProductDetailPage
-│   └── order/features/
-│       ├── hooks/                    # useCreateOrder
-│       └── pages/                    # CheckoutPage、OrderSuccessPage、OrderListPage、OrderDetailPage
-└── mock/
-    ├── browser.ts                    # MSW setupWorker + 路由处理
-    ├── handlers.ts                   # Mock CRUD 逻辑（订单数据持久化到 localStorage）
-    └── products.ts                   # 静态商品数据（6 个商品）
+```text
+pages/components（UI） → hooks（服务端状态） 或 stores（客户端状态） → api → request → axios
+common/*（通用组件/工具）为被依赖方，禁止依赖 features/*
+features/* 之间禁止横向依赖
+UI 层禁止直接 import axios
 ```
 
-### 数据流
+规则定义在 `.dependency-cruiser.cjs`，本地 `npm run cruise`，CI 中 Dependency rules 步骤强制。
 
-```
-页面组件 → 自定义 Hook（useQuery/useMutation） → API 函数 → Axios 拦截器 → MSW Mock → 静态数据
-```
+## 状态管理（详见 docs/adr/0002）
 
-每个功能模块拥有自己的 hooks 和 pages。Hooks 封装 TanStack Query 调用并传入类型化的 queryKey。Pages 只做纯 UI 组合，不直接调用 API。
+- **服务端状态**：@tanstack/react-query v5。hook 封装于各 feature 的 hooks/，queryKey 工厂导出复用（如 `productDetailQueryKey`，供预取）。
+- **客户端状态**：zustand v5。`authStore`（登录态+token）、`cartStore`（购物车）。两者均持久化 localStorage。
+- 判断规则：数据来自服务端 → query；纯本地 → store。
 
-### 关键模式
+## API 契约（S3）
 
-- **布局路由**：`App.tsx` 使用 `<Outlet />` 包裹所有页面，共享 `<Header>`
-- **Query 缓存**：全局 `staleTime: 5 分钟`；单个查询可覆盖（如订单使用 `staleTime: 0` 确保每次进入都获取最新数据）
-- **Mock 持久化**：订单数据存储在 `localStorage`（key `__mall_orders__`），模拟 HMR 热更新后数据不丢失
-- **内联样式**：所有组件使用 `React.CSSProperties` 对象 — 无 CSS Modules 或 Tailwind
-- **路径别名**：`@/*` → `src/*`
+- 契约单一真源：`docs/api/openapi.yaml`（schema 命名与前端域模型同名；响应包装以 `*Envelope` schema 表达）。
+- 类型生成：`npm run gen:api` → `src/api/schema.d.ts`（生成物进 git）。
+- `src/types/index.ts` 从生成 schema re-export + 少量前端辅助类型（`ApiResponse<T>`/`PaginationParams`）；**不要手写 wire 模型**。
+- 新增端点流程：先改 yaml → gen:api → api 层实现 → MSW handler 按契约对齐。
 
-### 路由
+## 测试
 
-| 路由             | 组件              |
-| ---------------- | ----------------- |
-| `/`              | ProductListPage   |
-| `/product/:id`   | ProductDetailPage |
-| `/checkout`      | CheckoutPage      |
-| `/order/success` | OrderSuccessPage  |
-| `/orders`        | OrderListPage     |
-| `/order/:id`     | OrderDetailPage   |
+- vitest + React Testing Library + MSW（`src/test/setup.ts`）。
+- 现有覆盖：`cartStore`（4 用例）、`useProductList`（2 用例，含 keyword 透传）。
+- 配置在 `vite.config.ts` 的 `test` 段（jsdom + coverage）。
+
+## 构建与产物（详见 docs/adr/0003）
+
+- 分包：`manualChunks` 函数式分组（react / react-query / router / state / monitoring / vendor）。
+- 压缩：gzip（brotli 暂缓，见 control_doc residual）。
+- 体积预算：size-limit 200 kB（brotli 后），超限 `npm run size` 失败。
+- 体积分析：`ANALYZE=1 npm run build` 生成 `dist/stats.html`（按需，勿常驻）。
+- React Compiler 未启用（@vitejs/plugin-react v6 需 reactCompilerPreset + @rolldown/plugin-babel，见 control_doc）。
+
+## CI（.github/workflows/ci.yml）
+
+push/PR 触发：lint → build（含 tsc）→ test → cruise → size → audit（非阻断，官方 registry）。最小权限 + concurrency 取消过期运行。
+
+## 可观测（src/lib/）
+
+`monitor.ts`（Sentry init + 白屏检测）、`perf.ts`（FCP/LCP/CLS，CLS 仅页面隐藏时上报终值）、`track.ts`（埋点出口：商品曝光/路由 PV/白屏）、`logger.ts`（统一日志）。未配置 `VITE_SENTRY_DSN` 时全部退化为 console（见 `.env.example`）。
+
+## 权限与安全
+
+- `AuthGuard` 支持登录态守卫与 `requiredRole`（RBAC）；404/403 兜底页与路由级 `RouteErrorBoundary` 见 `src/lib/router.tsx`。
+- RBAC 当前无路由配置 `requiredRole`（能力就位，待后端角色契约），见 control_doc residual。
+- token 存储方案决策见 `docs/adr/0001-token-storage.md`（localStorage 现状 + httpOnly cookie 目标）。
+- 生产构建注入 CSP（vite.config 的 csp-inject 插件，dev 不注入）。
+- commit 经 husky commit-msg 强制 Conventional Commits（type 白名单 + scope 白名单，见 `commitlint.config.cjs`）。
+
+## 已知限制
+
+- MSW mock-only：httpOnly cookie、真实 Sentry 上报（SourceMap）、semantic-release 均需真实后端/发布场景，已 ADR/deferred。
+- 暗黑模式已完成机制与首批适配（Header/商品列表），其余页面为亮色硬编码，待批次迁移。
+- `src/common/__cruise_canary__.ts`（空文件）与 `src/types/{api,product,order}.ts`（旧类型子文件）为待清理遗留，删除命令见 control_doc。

@@ -70,9 +70,9 @@
 | S1    | 架构边界（dependency-cruiser） | committed | 50f08fb |
 | S2    | 提交规范（commitlint）         | committed | c2f3580 |
 | S3    | API 契约（OpenAPI+类型生成）   | committed | ed0f007 |
-| S4    | 安全（ADR+CSP+audit）          | committed | —       |
-| S5    | 设计系统（SB+暗黑+a11y）       | pending   | —       |
-| S6    | 文档治理（CLAUDE.md 重写+ADR） | pending   | —       |
+| S4    | 安全（ADR+CSP+audit）          | committed | 68ab713 |
+| S5    | 设计系统（SB+暗黑+a11y）       | committed | 36da952 |
+| S6    | 文档治理（CLAUDE.md 重写+ADR） | committed | —       |
 
 > Phase 3 goal confirmation：用户确认全范围 6 slice 逐 slice 推进（与 Phase 2 同模式）。
 > plan review 裁决：6 项 findings 全部 accepted，作为修订增补写入 plan 后 re-review 通过。
